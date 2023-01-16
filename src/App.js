@@ -10,16 +10,7 @@ function App() {
   const client = useClient();
   const testChannel = useChannel(client);
 
-  const login = async () => {
-    await client.login({ uid: 'userId' })
-    await testChannel.join()
-  }
   
-  const sendMsg = async (str) => {
-    const message = client.createMessage({ str, messageType: 'TEXT' })
-    await testChannel.sendMessage(message)
-  }
-
   const [compstate, setCompstate] = useState({
     showui: true,
     mainpeerconnecionObjArray:[]
@@ -30,6 +21,17 @@ function App() {
 
   }, []);
 
+  const login = async () => {
+    await client.login({ uid: compstate.personname })
+    await testChannel.join()
+  }
+  
+  const sendMsg = async (str) => {
+    const message = client.createMessage({ str, messageType: 'TEXT' })
+    await testChannel.sendMessage(message)
+  }
+
+  
   let getData = async (methodprops) => {
     let totaldata = await localStorage.getItem("totaljson");
     if(totaldata){
