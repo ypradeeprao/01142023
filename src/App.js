@@ -2,17 +2,6 @@ import logo from "./logo.svg";
 import "./App.css";
 import React, { useState, useEffect, createRef } from "react";
 
-const APP_ID = "YOUR-APP-ID"
-let token = null;
-let client;
-
-let rtmClient;
-let channel;
-
-rtmClient = await AgoraRTM.createInstance(APP_ID);
-
-
-
 function App() {
   const [compstate, setCompstate] = useState({
     showui: true,
@@ -122,21 +111,6 @@ function App() {
         totaldataJson.meetings[compstate.meetingname].joinednames = joinednames;
 
         await localStorage.setItem("totaljson", JSON.stringify(totaldataJson));
-
-
-        await rtmClient.login({compstate.personname,token});
-
-await rtmClient.addOrUpdateLocalUserAttributes({'name':compstate.personname});
-
-channel = await rtmClient.createChannel(compstate.meetingname);
-await channel.join();
-
-channel.on('MemberJoined', handleMemberJoined);
-channel.on('MemberLeft', handleMemberLeft);
-channel.on('ChannelMessage', handleChannelMessage);
-
-
-
       } else {
         alert("no meeting exists");
       }
