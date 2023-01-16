@@ -1,9 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
 import React, { useState,useEffect, createRef } from 'react';
+import { createChannel, createClient, RtmMessage } from 'agora-rtm-react';
+const useClient = createClient('58389bfcba704a8aa0f964e67a4ca6be');
+const useChannel = createChannel('channelName');
 
 function App() {
- 
+  const client = useClient();
+  const testChannel = useChannel(client);
+
   const [compstate, setCompstate] = useState({
     showui: true,
     mainpeerconnecionObjArray:[]
