@@ -3,13 +3,14 @@ import './App.css';
 import React, { useState,useEffect, createRef } from 'react';
 
 function App() {
-
+ 
   const [compstate, setCompstate] = useState({
     showui: true,
+    mainpeerconnecionObjArray:[]
   });
 
   useEffect(() => {
-    getData();
+   // getData();
 
   }, []);
 
@@ -47,6 +48,7 @@ function App() {
   let handleClick = async (methodprops) => {
     let { type, order } = methodprops;
     console.log(methodprops);
+  
     let totaldata = await localStorage.getItem("totaljson");
     let totaldataJson = {};
     if(totaldata){
@@ -56,7 +58,8 @@ function App() {
    if(type == "createmeeting"){
     if(totaldataJson && totaldataJson.meetings){
       totaldataJson.meetings[compstate.meetingname] = {}
-
+     
+        
     }
     else{
       totaldataJson.meetings = {};
@@ -70,7 +73,29 @@ function App() {
     );
   }
   if(type == "joinmeeting"){
-    if(totaldataJson && totaldataJson.meetings && totaldataJson.meetings[compstate.meetingname]){
+    if(totaldataJson && totaldataJson.meetings 
+      && totaldataJson.meetings[compstate.meetingname]){
+    
+        let mainpeerconnections = [];
+        if(totaldataJson.meetings[compstate.meetingname].mainpeerconnections){
+          mainpeerconnections = totaldataJson.meetings[compstate.meetingname].mainpeerconnections;
+        }
+       
+      let mainpeerconnecionobj ={
+        meetingname:compstate.meetingname,
+        fromname:compstate.personname,
+         toname:"", 
+         peerconnecionobject:{}
+        };
+       
+        mainpeerconnections.push(mainpeerconnecionobj);
+         totaldataJson.meetings[compstate.meetingname].mainpeerconnections = mainpeerconnections;
+      
+        await localStorage.setItem(
+          "totaljson",
+          JSON.stringify(totaldataJson)
+        );
+        
     }
     else{
       alert("no meeting exists");
