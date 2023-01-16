@@ -156,6 +156,18 @@ function App() {
     let joinednamesU = [];
    for(let i=0; i< joinednames.length; i++){
    if(compstate.personname != joinednames[i].name){
+ let mainpeerconnections = joinednames[i].mainpeerconnections;
+ let mainpeerconnectionsU = [];
+ for(let j=0; j< mainpeerconnections.length; j++){
+  if(mainpeerconnections[j].fromname == compstate.personname ||
+    mainpeerconnections[j].toname == compstate.personname){
+
+  }
+  else{
+    mainpeerconnectionsU.push(mainpeerconnections[j]);
+  }
+ }
+ joinednames[i].mainpeerconnections = mainpeerconnectionsU;
     joinednamesU.push(joinednames[i]);
    }
    }
