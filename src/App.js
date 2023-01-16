@@ -79,6 +79,19 @@ function App() {
     if(totaldataJson && totaldataJson.meetings 
       && totaldataJson.meetings[compstate.meetingname]){
     
+   let joinednames = {};
+   if(totaldataJson.meetings[compstate.meetingname].joinednames){
+    joinednames = totaldataJson.meetings[compstate.meetingname].joinednames;
+  }
+  let joinedname ={
+    name:compstate.personname,
+    };
+   
+    joinednames.push(joinedname);
+     totaldataJson.meetings[compstate.meetingname].joinednames = joinednames;
+
+
+
         let mainpeerconnections = [];
         if(totaldataJson.meetings[compstate.meetingname].mainpeerconnections){
           mainpeerconnections = totaldataJson.meetings[compstate.meetingname].mainpeerconnections;
