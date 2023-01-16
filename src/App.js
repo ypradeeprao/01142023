@@ -83,29 +83,87 @@ function App() {
    if(totaldataJson.meetings[compstate.meetingname].joinednames){
     joinednames = totaldataJson.meetings[compstate.meetingname].joinednames;
   }
+
   let joinedname ={
     name:compstate.personname,
+    mainpeerconnections:[]
     };
    
     joinednames.push(joinedname);
      totaldataJson.meetings[compstate.meetingname].joinednames = joinednames;
 
 
-
-        let mainpeerconnections = [];
-        if(totaldataJson.meetings[compstate.meetingname].mainpeerconnections){
-          mainpeerconnections = totaldataJson.meetings[compstate.meetingname].mainpeerconnections;
+     if(totaldataJson.meetings[compstate.meetingname].joinednames){
+      joinednames = totaldataJson.meetings[compstate.meetingname].joinednames;
+  
+      let mainpeerconnections = [];
+    
+      for(let i=0; i< joinednames.length; i++){
+        if(compstate.personname == joinednames[i].name && joinednames[i].mainpeerconnections){
+          mainpeerconnections = joinednames[i].mainpeerconnections;
         }
-       
-      let mainpeerconnecionobj ={
-        meetingname:compstate.meetingname,
-        fromname:compstate.personname,
-         toname:"", 
-         peerconnecionobject:{}
-        };
-       
+      }
+     
+      for(let i=0; i< joinednames.length; i++){
+        if(compstate.personname != joinednames[i].name){
+  
+          let mainpeerconnecionobj ={
+            meetingname:compstate.meetingname,
+            fromname:compstate.personname,
+             toname:joinednames[i].name, 
+             peerconnecionobject:{}
+            };
+  
+  
         mainpeerconnections.push(mainpeerconnecionobj);
-         totaldataJson.meetings[compstate.meetingname].mainpeerconnections = mainpeerconnections;
+        }
+        joinednames[i].mainpeerconnections = mainpeerconnections;
+        }
+        
+  
+     
+      
+  
+  
+    }
+
+
+
+      
+      
+        await localStorage.setItem(
+          "totaljson",
+          JSON.stringify(totaldataJson)
+        );
+        
+    }
+    else{
+      alert("no meeting exists");
+    }
+
+
+
+  }
+  if(type == "quitmeeting"){
+    if(totaldataJson && totaldataJson.meetings 
+      && totaldataJson.meetings[compstate.meetingname]){
+    
+   let joinednames = [];
+   if(totaldataJson.meetings[compstate.meetingname].joinednames){
+    joinednames = totaldataJson.meetings[compstate.meetingname].joinednames;
+  }
+
+    let joinednamesU = [];
+   for(let i=0; i< joinednames.length; i++){
+   if(compstate.personname != joinednames[i].name){
+    joinednamesU.push(joinednames[i]);
+   }
+   }
+   
+     totaldataJson.meetings[compstate.meetingname].joinednames = joinednamesU;
+
+
+
       
         await localStorage.setItem(
           "totaljson",
@@ -148,6 +206,8 @@ function App() {
           />
     <div onClick={() => handleClick({type:"createmeeting"})} >create</div>
     <div  onClick={() => handleClick({type:"joinmeeting"})} >Join</div>
+    <div  onClick={() => handleClick({type:"quitmeeting"})} >quit</div>
+    <div  onClick={() => handleClick({type:"deletemeeting"})} >delete</div>
    </div>
   
   );
