@@ -130,7 +130,7 @@ function App() {
         let joinednamesU = [];
         for (let i = 0; i < joinednames.length; i++) {
           if (compstate.personname != joinednames[i].name) {
-            let mainpeerconnections = joinednames[i].name.mainpeerconnections;
+            let mainpeerconnections = joinednames[i].mainpeerconnections;
             let mainpeerconnectionsU = [];
             for (let j = 0; j < mainpeerconnections.length; j++) {
               if (
@@ -141,7 +141,7 @@ function App() {
                 mainpeerconnectionsU.push(mainpeerconnections[j]);
               }
             }
-            joinednames[i].name.mainpeerconnections = mainpeerconnectionsU;
+            joinednames[i].mainpeerconnections = mainpeerconnectionsU;
             joinednamesU.push(joinednames[i]);
           }
         }
