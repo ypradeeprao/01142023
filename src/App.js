@@ -23,7 +23,7 @@ function App() {
 
   const login = async () => {
     let uid = "123";
-    await client.login({ uid: "user-${uid}" });
+    await client.login({ uid: uid });
     await testChannel.join();
   }
   
