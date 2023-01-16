@@ -40,8 +40,11 @@ function App() {
     let { type, order, value } = methodprops;
   console.log(methodprops);
 
-    if(type == "meetingname" || type == "personname"){
-      await showui({type:value});
+    if(type == "meetingname" ){
+      await showui({"meetingname":value});
+    }
+    if(type == "personname"){
+      await showui({"personname":value});
     }
   }
 
