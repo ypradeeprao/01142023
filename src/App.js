@@ -123,8 +123,8 @@ function App() {
 
         await localStorage.setItem("totaljson", JSON.stringify(totaldataJson));
 
- let uid = compstate.personname;
-        await rtmClient.login({uid,token});
+
+        await rtmClient.login({compstate.personname,token});
 
 await rtmClient.addOrUpdateLocalUserAttributes({'name':compstate.personname});
 
