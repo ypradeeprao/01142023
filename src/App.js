@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, { useState,useEffect, createRef } from 'react';
 import { createChannel, createClient, RtmMessage } from 'agora-rtm-react';
-const useClient = createClient('58389bfcba704a8aa0f964e67a4ca6be');
+const useClient = createClient('99b5e69dc8264d92bb0383a2470f2919');
 const useChannel = createChannel('channelName');
 
 
