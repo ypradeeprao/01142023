@@ -79,7 +79,7 @@ function App() {
     if(totaldataJson && totaldataJson.meetings 
       && totaldataJson.meetings[compstate.meetingname]){
     
-   let joinednames = {};
+   let joinednames = [];
    if(totaldataJson.meetings[compstate.meetingname].joinednames){
     joinednames = totaldataJson.meetings[compstate.meetingname].joinednames;
   }
