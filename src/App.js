@@ -94,7 +94,7 @@ function App() {
             if (compstate.personname != joinednames[i].name) {
               let mainpeerconnections = [];
               if (joinednames[i].name.mainpeerconnections) {
-                mainpeerconnections = joinednames[i].mainpeerconnections;
+                mainpeerconnections = joinednames[i].name.mainpeerconnections;
               }
               let mainpeerconnecionobj = {
                 meetingname: compstate.meetingname,
@@ -105,7 +105,7 @@ function App() {
               };
 
               mainpeerconnections.push(mainpeerconnecionobj);
-              joinednames[i].mainpeerconnections = mainpeerconnections;
+              joinednames[i].name.mainpeerconnections = mainpeerconnections;
             }
           }
         }
