@@ -5,9 +5,20 @@ import { createChannel, createClient, RtmMessage } from 'agora-rtm-react';
 const useClient = createClient('58389bfcba704a8aa0f964e67a4ca6be');
 const useChannel = createChannel('channelName');
 
+
 function App() {
   const client = useClient();
   const testChannel = useChannel(client);
+
+  const login = async () => {
+    await client.login({ uid: 'userId' })
+    await testChannel.join()
+  }
+  
+  const sendMsg = async (str) => {
+    const message = client.createMessage({ str, messageType: 'TEXT' })
+    await testChannel.sendMessage(message)
+  }
 
   const [compstate, setCompstate] = useState({
     showui: true,
@@ -74,7 +85,7 @@ function App() {
       totaldataJson.meetings[compstate.meetingname] = {}
     }
 
-
+   
     await localStorage.setItem(
       "totaljson",
       JSON.stringify(totaldataJson)
@@ -140,13 +151,16 @@ function App() {
           "totaljson",
           JSON.stringify(totaldataJson)
         );
+
+        await login();
+        await sendMsg("test");
         
     }
     else{
       alert("no meeting exists");
     }
 
-
+  
 
   }
   if(type == "quitmeeting"){
