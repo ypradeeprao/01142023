@@ -22,16 +22,17 @@ function App() {
   }, []);
 
   const login = async () => {
-    await client.login({ uid: compstate.personname })
-    await testChannel.join()
+    let uid = "123";
+    await client.login({ uid: "user-${uid}" });
+    await testChannel.join();
   }
   
   const sendMsg = async (str) => {
-    const message = client.createMessage({ str, messageType: 'TEXT' })
-    await testChannel.sendMessage(message)
+    const message = client.createMessage({ str, messageType: 'TEXT' });
+    await testChannel.sendMessage(message);
   }
 
-  
+
   let getData = async (methodprops) => {
     let totaldata = await localStorage.getItem("totaljson");
     if(totaldata){
