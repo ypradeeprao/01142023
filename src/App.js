@@ -77,14 +77,10 @@ function App() {
           joinednames =
             totaldataJson.meetings[compstate.meetingname].joinednames;
         }
+        let mainpeerconnections = [];
+       
 
-        let joinedname = {
-          name: compstate.personname,
-          mainpeerconnections: [],
-        };
-
-        joinednames.push(joinedname);
-        totaldataJson.meetings[compstate.meetingname].joinednames = joinednames;
+     
 
         if (totaldataJson.meetings[compstate.meetingname].joinednames) {
           joinednames =
@@ -92,10 +88,8 @@ function App() {
 
           for (let i = 0; i < joinednames.length; i++) {
             if (compstate.personname != joinednames[i].name) {
-              let mainpeerconnections = [];
-              if (joinednames[i].name.mainpeerconnections) {
-                mainpeerconnections = joinednames[i].name.mainpeerconnections;
-              }
+             
+              
               let mainpeerconnecionobj = {
                 meetingname: compstate.meetingname,
                 fromname: compstate.personname,
@@ -105,10 +99,16 @@ function App() {
               };
 
               mainpeerconnections.push(mainpeerconnecionobj);
-              joinednames[i].name.mainpeerconnections = mainpeerconnections;
+             
             }
           }
         }
+        let joinedname = {
+          name: compstate.personname,
+          mainpeerconnections: mainpeerconnections,
+        };
+        joinednames.push(joinedname);
+        totaldataJson.meetings[compstate.meetingname].joinednames = joinednames;
 
         await localStorage.setItem("totaljson", JSON.stringify(totaldataJson));
       } else {
@@ -130,7 +130,7 @@ function App() {
         let joinednamesU = [];
         for (let i = 0; i < joinednames.length; i++) {
           if (compstate.personname != joinednames[i].name) {
-            let mainpeerconnections = joinednames[i].mainpeerconnections;
+            let mainpeerconnections = joinednames[i].name.mainpeerconnections;
             let mainpeerconnectionsU = [];
             for (let j = 0; j < mainpeerconnections.length; j++) {
               if (
@@ -141,7 +141,7 @@ function App() {
                 mainpeerconnectionsU.push(mainpeerconnections[j]);
               }
             }
-            joinednames[i].mainpeerconnections = mainpeerconnectionsU;
+            joinednames[i].name.mainpeerconnections = mainpeerconnectionsU;
             joinednamesU.push(joinednames[i]);
           }
         }
