@@ -569,6 +569,7 @@ async function handleOffer(methodprops) {
   let localmeetingname = localStorage.getItem("localmeetingname");
   let localpersonname = localStorage.getItem("localpersonname");
 if(localpersonname !== personname){
+  consolelog("handleOffer",methodprops);
   if (pc) {
     console.error('existing peerconnection');
     return;
@@ -598,6 +599,7 @@ async function handleAnswer(methodprops) {
   let localmeetingname = localStorage.getItem("localmeetingname");
   let localpersonname = localStorage.getItem("localpersonname");
 if(localpersonname !== personname){
+  consolelog("handleAnswer",methodprops);
   if (!pc) {
     console.error('no peerconnection');
     return;
@@ -611,6 +613,7 @@ async function handleCandidate(methodprops) {
   let localmeetingname = localStorage.getItem("localmeetingname");
   let localpersonname = localStorage.getItem("localpersonname");
 if(localpersonname !== personname){
+  consolelog("handleCandidate",methodprops);
   if (!pc) {
     console.error('no peerconnection');
     return;
