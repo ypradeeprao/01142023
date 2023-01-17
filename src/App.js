@@ -232,7 +232,7 @@ let joinMeeting = async (methodprops) => {
     let newmeetingjoinee = { name: personname, meetingname: meetingname };
     meetingjoineesdatajson.push(newmeetingjoinee);
     consolelog("meetingjoineesdatajson",meetingjoineesdatajson);
-    localStorage.setItem("meetings", JSON.stringify(meetingjoineesdatajson));
+    localStorage.setItem("meetingjoinees", JSON.stringify(meetingjoineesdatajson));
   }
 
 }
