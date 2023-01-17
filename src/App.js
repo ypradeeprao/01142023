@@ -49,17 +49,17 @@ if(localpersonname !== personname){
   if (datafromserver &&
     (datafromserver.type === "offer")
   ) {
-    handleOffer(datafromserver);
+   // handleOffer(datafromserver);
   }
   if (datafromserver &&
     (datafromserver.type === "answer")
   ) {
-    handleAnswer(datafromserver);
+  //  handleAnswer(datafromserver);
   }
   if (datafromserver &&
     (datafromserver.type === "candidate")
   ) {
-    handleCandidate(datafromserver);
+  //  handleCandidate(datafromserver);
   }
 }
 
