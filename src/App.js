@@ -425,7 +425,8 @@ let createPeerConnection = async (MemberId) => {
   }
 }
 
-let showLocalStreamVideo = async (MemberId) => {
+let showLocalStreamVideo = async (methodprops) => {
+  consolelog("showLocalStreamVideo",methodprops);
   let constraints = {
     video:{
         width:{min:640, ideal:1920, max:1920},
@@ -476,13 +477,22 @@ function App() {
   useEffect(() => {
     getData();
 
+    
   }, []);
 
 
 
 
   let getData = async (methodprops) => {
-
+    let constraints = {
+      video:{
+          width:{min:640, ideal:1920, max:1920},
+          height:{min:480, ideal:1080, max:1080},
+      },
+      audio:true
+  };
+    localStream = await navigator.mediaDevices.getUserMedia(constraints);
+    document.getElementById('myscreenvideo').srcObject = localStream;
   }
 
   // let showui = async (methodprops) => {
