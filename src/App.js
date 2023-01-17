@@ -12,7 +12,8 @@ socket.onopen = function(e) {
 };
 
 socket.onmessage = function(event) {
-  console.log(`[message] Data received from server: ${event.data}`);
+  let datafromserver = JSON.parse(event.data);
+  console.log(datafromserver);
 };
 
 socket.onclose = function(event) {
