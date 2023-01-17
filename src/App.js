@@ -16,29 +16,29 @@ socket.onopen = function (e) {
 socket.onmessage = function (event) {
   console.log(event);
   let datafromserver = JSON.parse(event.data);
-  
- 
- 
+
+
+
   if (datafromserver &&
-    (datafromserver.type === "createmeeting" )
+    (datafromserver.type === "createmeeting")
   ) {
-   createMeeting(datafromserver);
+    createMeeting(datafromserver);
   }
   if (datafromserver &&
-    (datafromserver.type === "joinmeeting" )
+    (datafromserver.type === "joinmeeting")
   ) {
     joinMeeting(datafromserver);
-   }
-   if (datafromserver &&
-    (datafromserver.type === "quitmeeting" )
+  }
+  if (datafromserver &&
+    (datafromserver.type === "quitmeeting")
   ) {
-   quitMeeting(datafromserver);
-   }
-   if (datafromserver &&
-    (datafromserver.type === "deletemeeting" )
+    quitMeeting(datafromserver);
+  }
+  if (datafromserver &&
+    (datafromserver.type === "deletemeeting")
   ) {
     deleteMeeting(datafromserver);
-   }
+  }
 
 
 
@@ -60,33 +60,34 @@ socket.onerror = function (error) {
 
 let createMeeting = async (methodprops) => {
   console.log(methodprops);
-  let {meetingname, personname} = methodprops;
+  let { meetingname, personname } = methodprops.data;
   let meetingsdata = localStorage.getItem("meetings");
   let localpersonname = localStorage.getItem("localpersonname");
   let isalreadyexists = false;
-  if(meetingsdata && meetingsdata.length > 0){
-  for(let i=0; i<meetingsdata.length; i++){
-  if(meetingsdata[i].name === meetingname){
- isalreadyexists = true;
-  }
-  }
- 
+  if (meetingsdata && meetingsdata.length > 0) {
+    for (let i = 0; i < meetingsdata.length; i++) {
+      if (meetingsdata[i].name === meetingname) {
+        isalreadyexists = true;
+      }
+    }
+
   }
 
-  if(isalreadyexists === true && localpersonname === personname){
+  if (isalreadyexists === true && localpersonname === personname) {
     alert("meeting already exists");
+  }
+  else {
+
+    if (meetingsdata && meetingsdata.length > 0) {
     }
-    else{
-    
-      if(meetingsdata && meetingsdata.length > 0){
-      }
-      else{
-        meetingsdata = [];
-      }
-      let newmeeting = {name:meetingname};
-      meetingsdata.push(newmeeting);
-      localStorage.setItem("meetings",JSON.stringify(meetingsdata));
+    else {
+      meetingsdata = [];
     }
+    let newmeeting = { name: meetingname };
+    meetingsdata.push(newmeeting);
+    console.log(meetingsdata);
+    localStorage.setItem("meetings", JSON.stringify(meetingsdata));
+  }
 
 }
 let joinMeeting = async (methodprops) => {
@@ -101,11 +102,11 @@ function App() {
 
   const [compstate, setCompstate] = useState({
     showui: true,
-  
+
   });
 
   useEffect(() => {
-     getData();
+    getData();
 
   }, []);
 
@@ -122,7 +123,7 @@ function App() {
 
   //   await setCompstate({ ...compstatejs, ...methodpropsjs, showui: true });
   // };
-  
+
   // let hideui = async (methodprops) => {
   //   let compstatejs = JSON.parse(JSON.stringify(compstate));
   //   let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
@@ -134,11 +135,11 @@ function App() {
     console.log(methodprops);
 
     if (type === "meetingname") {
-   //   await showui({ "meetingname": value });
+      //   await showui({ "meetingname": value });
       localStorage.setItem("localmeetingname", value);
     }
     if (type === "personname") {
-     // await showui({ "personname": value });
+      // await showui({ "personname": value });
       localStorage.setItem("localpersonname", value);
     }
   }
@@ -157,42 +158,42 @@ function App() {
     if (type === "quitmeeting") {
       socket.send(JSON.stringify({ type: "quitmeeting", data: { meetingname: localmeetingname, personame: localpersonname } }));
     }
-   
+
   }
 
 
-console.log(compstate);
-if (compstate.showui !== true) {
-  return <></>;
-} else {
-  return (
-    <div>
-      meetingname
-      <input onChange={(e) =>
-        handleChange({
-          type: "meetingname",
-          value: e.target.value,
-        })
-      }
-        defaultValue={compstate.meetingname}
-      />
-      personname
-      <input onChange={(e) =>
-        handleChange({
-          type: "personname",
-          value: e.target.value,
-        })
-      }
-        defaultValue={compstate.personname}
-      />
-      <div onClick={() => handleClick({ type: "createmeeting" })} >create</div>
-      <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
-      <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
-      <div onClick={() => handleClick({ type: "deletemeeting" })} >delete</div>
-    </div>
+  console.log(compstate);
+  if (compstate.showui !== true) {
+    return <></>;
+  } else {
+    return (
+      <div>
+        meetingname
+        <input onChange={(e) =>
+          handleChange({
+            type: "meetingname",
+            value: e.target.value,
+          })
+        }
+          defaultValue={compstate.meetingname}
+        />
+        personname
+        <input onChange={(e) =>
+          handleChange({
+            type: "personname",
+            value: e.target.value,
+          })
+        }
+          defaultValue={compstate.personname}
+        />
+        <div onClick={() => handleClick({ type: "createmeeting" })} >create</div>
+        <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
+        <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
+        <div onClick={() => handleClick({ type: "deletemeeting" })} >delete</div>
+      </div>
 
-  );
-}
+    );
+  }
 }
 
 export default App;
