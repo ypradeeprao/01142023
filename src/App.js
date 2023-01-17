@@ -1,6 +1,6 @@
-import logo from './logo.svg';
+
 import './App.css';
-import React, { useState, useEffect, createRef } from 'react';
+import React, { useState, useEffect } from 'react';
 let socket = new WebSocket("wss://s8239.nyc1.piesocket.com/v3/1?api_key=eWE09fv3RllnW6tVNzfP85M4rCn6ckxRQfHLP4aX&notify_self=1");
 
 
@@ -16,8 +16,8 @@ socket.onmessage = function (event) {
   console.log(datafromserver.type);
   console.log(datafromserver.totaldata);
   if (datafromserver &&
-    (datafromserver.type == "createmeeting" || datafromserver.type == "joinmeeting"
-      || datafromserver.type == "quitmeeting")
+    (datafromserver.type === "createmeeting" || datafromserver.type === "joinmeeting"
+      || datafromserver.type === "quitmeeting")
   ) {
     // localStorage.setItem(
     //   "totaljson",
@@ -51,7 +51,7 @@ function App() {
   });
 
   useEffect(() => {
-    // getData();
+     getData();
 
   }, []);
 
@@ -68,44 +68,44 @@ function App() {
 
     await setCompstate({ ...compstatejs, ...methodpropsjs, showui: true });
   };
-  let hideui = async (methodprops) => {
-    let compstatejs = JSON.parse(JSON.stringify(compstate));
-    let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
-    await setCompstate({ ...compstatejs, ...methodpropsjs, showui: false });
-  };
+  // let hideui = async (methodprops) => {
+  //   let compstatejs = JSON.parse(JSON.stringify(compstate));
+  //   let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
+  //   await setCompstate({ ...compstatejs, ...methodpropsjs, showui: false });
+  // };
 
   let handleChange = async (methodprops) => {
-    let { type, order, value } = methodprops;
+    let { type, value } = methodprops;
     console.log(methodprops);
 
-    if (type == "meetingname") {
+    if (type === "meetingname") {
       await showui({ "meetingname": value });
     }
-    if (type == "personname") {
+    if (type === "personname") {
       await showui({ "personname": value });
     }
   }
 
   let handleClick = async (methodprops) => {
-    let { type, order } = methodprops;
+    let { type } = methodprops;
     console.log(methodprops);
-    if (type == "createmeeting") {
+    if (type === "createmeeting") {
       socket.send(JSON.stringify({ type: "createmeeting", data: { meetingname: compstate.meetingname, personame: compstate.personame } }));
     }
-    if (type == "joinmeeting") {
+    if (type === "joinmeeting") {
       socket.send(JSON.stringify({ type: "joinmeeting", data: { meetingname: compstate.meetingname, personame: compstate.personame } }));
     }
-    if (type == "quitmeeting") {
+    if (type === "quitmeeting") {
       socket.send(JSON.stringify({ type: "quitmeeting", data: { meetingname: compstate.meetingname, personame: compstate.personame } }));
     }
     else {
       alert("no meeting exists");
     }
   }
-}
+
 
 console.log(compstate);
-if (compstate.showui != true) {
+if (compstate.showui !== true) {
   return <></>;
 } else {
   return (
