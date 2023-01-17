@@ -487,6 +487,8 @@ function App() {
         let video = videoRef.current;
         video.srcObject = stream;
         video.play();
+
+        document.getElementById('myscreenvideo').srcObject = localStream;
       })
       .catch(err => {
         console.error("error:", err);
