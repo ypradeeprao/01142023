@@ -435,7 +435,10 @@ let showLocalStreamVideo = async (methodprops) => {
     audio:true
 };
   localStream = await navigator.mediaDevices.getUserMedia(constraints);
-  document.getElementById('myscreenvideo').srcObject = localStream;
+  let myscreenvideo =  document.getElementById('myscreenvideo');
+  myscreenvideo.srcObject = localStream;
+  myscreenvideo.play();
+
 }
 
 let createOffer = async (MemberId) => {
@@ -488,9 +491,7 @@ function App() {
         video.srcObject = stream;
         video.play();
 
-        let myscreenvideo =  document.getElementById('myscreenvideo');
-        myscreenvideo.srcObject = stream;
-        myscreenvideo.play();
+      
 
         
       })
