@@ -157,6 +157,84 @@ let deleteMeeting = async (methodprops) => {
 
 }
 let joinMeeting = async (methodprops) => {
+  
+  consolelog("joinMeeting",methodprops);
+  let { meetingname, personname } = methodprops.data;
+  let meetingsdata = localStorage.getItem("meetings");
+  let meetingsdatajson = [];
+  if (meetingsdata) {
+    meetingsdatajson = JSON.parse(meetingsdata);
+  }
+ 
+
+  let meetingjoineesdata = localStorage.getItem("meetingjoinees");
+  let meetingjoineesdatajson = [];
+  if (meetingjoineesdata) {
+    meetingjoineesdatajson = JSON.parse(meetingjoineesdata);
+  }
+
+
+  let localpersonname = localStorage.getItem("localpersonname");
+  let ismeetingalreadyexists = false;
+  let ismeetingjoineealreadyexists = false;
+  if (meetingsdatajson && meetingsdatajson.length > 0) {
+   
+    consolelog("meetingsdatajson",meetingsdatajson);
+    for (let i = 0; i < meetingsdatajson.length; i++) {
+      consolelog("meetingsdatajson[i].name",meetingsdatajson[i].name);
+      consolelog("meetingname",meetingname);
+      if (meetingsdatajson[i].name === meetingname) {
+        ismeetingalreadyexists = true;
+      }
+    }
+
+  }
+
+  if (meetingjoineesdatajson && meetingjoineesdatajson.length > 0) {
+   
+    consolelog("meetingjoineesdatajson",meetingjoineesdatajson);
+    for (let i = 0; i < meetingjoineesdatajson.length; i++) {
+      consolelog("meetingjoineesdatajson[i].name",meetingjoineesdatajson[i].name);
+      consolelog("meetingname",meetingname);
+      if (meetingjoineesdatajson[i].meetingname === meetingname && meetingjoineesdatajson[i].name === meetingname) {
+        ismeetingjoineealreadyexists = true;
+      }
+    }
+
+  }
+
+
+
+  consolelog("ismeetingalreadyexists",ismeetingalreadyexists);
+  consolelog("localpersonname",localpersonname);
+  consolelog("personname",personname);
+
+  if (ismeetingalreadyexists === false && localpersonname === personname) {
+    alert("meeting not exists");
+  }
+  else if (ismeetingalreadyexists === false && localpersonname !== personname) {
+    
+  }
+  
+  if (ismeetingjoineealreadyexists === true && localpersonname === personname) {
+    alert("meeting joinee already exists");
+  }
+  else if (ismeetingjoineealreadyexists === true && localpersonname !== personname) {
+    
+  }
+  else {
+
+    if (meetingjoineesdatajson && meetingjoineesdatajson.length > 0) {
+    }
+    else {
+      meetingjoineesdatajson = [];
+    }
+    let newmeetingjoinee = { name: personname, meetingname: meetingname };
+    meetingjoineesdatajson.push(newmeetingjoinee);
+    consolelog("meetingjoineesdatajson",meetingjoineesdatajson);
+    localStorage.setItem("meetings", JSON.stringify(meetingjoineesdatajson));
+  }
+
 }
 let quitMeeting = async (methodprops) => {
 }
