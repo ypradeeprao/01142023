@@ -95,6 +95,9 @@ let createMeeting = async (methodprops) => {
   if (ismeetingalreadyexists === true && localpersonname === personname) {
     alert("meeting already exists");
   }
+  else if (ismeetingalreadyexists === true && localpersonname !== personname) {
+    
+  }
   else {
 
     if (meetingsdatajson && meetingsdatajson.length > 0) {
