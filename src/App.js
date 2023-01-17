@@ -11,19 +11,35 @@ socket.onopen = function (e) {
   //socket.send("My name is John");
 };
 
+
+
 socket.onmessage = function (event) {
+  console.log(event);
   let datafromserver = JSON.parse(event.data);
-  console.log(datafromserver.type);
-  console.log(datafromserver.totaldata);
+  
+ 
+ 
   if (datafromserver &&
-    (datafromserver.type === "createmeeting" || datafromserver.type === "joinmeeting"
-      || datafromserver.type === "quitmeeting")
+    (datafromserver.type === "createmeeting" )
   ) {
-    // localStorage.setItem(
-    //   "totaljson",
-    //   datafromserver.totaldata
-    // );
+   createMeeting(datafromserver);
   }
+  if (datafromserver &&
+    (datafromserver.type === "joinmeeting" )
+  ) {
+    joinMeeting(datafromserver);
+   }
+   if (datafromserver &&
+    (datafromserver.type === "quitmeeting" )
+  ) {
+   quitMeeting(datafromserver);
+   }
+   if (datafromserver &&
+    (datafromserver.type === "deletemeeting" )
+  ) {
+    deleteMeeting(datafromserver);
+   }
+
 
 
 };
@@ -42,12 +58,49 @@ socket.onerror = function (error) {
   console.log(`[error]`);
 };
 
+let createMeeting = async (methodprops) => {
+  let {meetingname, personname} = methodprops;
+  let meetingsdata = localStorage.getItem("meetings");
+  let localpersonname = localStorage.getItem("localpersonname");
+  let isalreadyexists = false;
+  if(meetingsdata && meetingsdata.length > 0){
+  for(let i=0; i<meetingsdata.length; i++){
+  if(meetingsdata[i].name === meetingname){
+ isalreadyexists = true;
+  }
+  }
+ 
+  }
+
+  if(isalreadyexists === true && localpersonname === personname){
+    alert("meeting already exists");
+    }
+    else{
+    
+      if(meetingsdata && meetingsdata.length > 0){
+      }
+      else{
+        meetingsdata = [];
+      }
+      let newmeeting = {name:meetingname};
+      meetingsdata.push(newmeeting);
+      localStorage.setItem(meetingsdata);
+    }
+
+}
+let joinMeeting = async (methodprops) => {
+}
+let quitMeeting = async (methodprops) => {
+}
+let deleteMeeting = async (methodprops) => {
+}
+
 
 function App() {
 
   const [compstate, setCompstate] = useState({
     showui: true,
-    mainpeerconnecionObjArray: []
+  
   });
 
   useEffect(() => {
@@ -62,12 +115,13 @@ function App() {
 
   }
 
-  let showui = async (methodprops) => {
-    let compstatejs = JSON.parse(JSON.stringify(compstate));
-    let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
+  // let showui = async (methodprops) => {
+  //   let compstatejs = JSON.parse(JSON.stringify(compstate));
+  //   let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
 
-    await setCompstate({ ...compstatejs, ...methodpropsjs, showui: true });
-  };
+  //   await setCompstate({ ...compstatejs, ...methodpropsjs, showui: true });
+  // };
+  
   // let hideui = async (methodprops) => {
   //   let compstatejs = JSON.parse(JSON.stringify(compstate));
   //   let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
@@ -79,24 +133,28 @@ function App() {
     console.log(methodprops);
 
     if (type === "meetingname") {
-      await showui({ "meetingname": value });
+   //   await showui({ "meetingname": value });
+      localStorage.setItem("localmeetingname", value);
     }
     if (type === "personname") {
-      await showui({ "personname": value });
+     // await showui({ "personname": value });
+      localStorage.setItem("localpersonname", value);
     }
   }
 
   let handleClick = async (methodprops) => {
     let { type } = methodprops;
     console.log(methodprops);
+    let localmeetingname = localStorage.getItem("localmeetingname");
+    let localpersonname = localStorage.getItem("localpersonname");
     if (type === "createmeeting") {
-      socket.send(JSON.stringify({ type: "createmeeting", data: { meetingname: compstate.meetingname, personame: compstate.personame } }));
+      socket.send(JSON.stringify({ type: "createmeeting", data: { meetingname: localmeetingname, personame: localpersonname } }));
     }
     if (type === "joinmeeting") {
-      socket.send(JSON.stringify({ type: "joinmeeting", data: { meetingname: compstate.meetingname, personame: compstate.personame } }));
+      socket.send(JSON.stringify({ type: "joinmeeting", data: { meetingname: localmeetingname, personame: localpersonname } }));
     }
     if (type === "quitmeeting") {
-      socket.send(JSON.stringify({ type: "quitmeeting", data: { meetingname: compstate.meetingname, personame: compstate.personame } }));
+      socket.send(JSON.stringify({ type: "quitmeeting", data: { meetingname: localmeetingname, personame: localpersonname } }));
     }
     else {
       alert("no meeting exists");
