@@ -247,8 +247,10 @@ let joinMeeting = async (methodprops) => {
     localStorage.setItem("meetingjoinees", JSON.stringify(meetingjoineesdatajson));
     if(meetingpeerconnectionsdatajson && meetingpeerconnectionsdatajson.length > 0){
     localStorage.setItem("meetingpeerconnections", JSON.stringify(meetingpeerconnectionsdatajson));
-    await resetPeerConnections();
+    
     }
+
+    await resetPeerConnections();
   }
 
 }
@@ -393,19 +395,18 @@ let resetPeerConnections = async (methodprops) => {
  await showLocalStreamVideo();
 }
 
-let createPeerConnection = async (MemberId) => {
+let createPeerConnection = async (methodprops) => {
+  let {localmeetingname, localpersonname} = methodprops;
   peerConnection = new RTCPeerConnection(servers)
 
   remoteStream = new MediaStream()
-  document.getElementById('user-2').srcObject = remoteStream
-  document.getElementById('user-2').style.display = 'block'
-
-  document.getElementById('user-1').classList.add('smallFrame')
-
-
+ 
   if(!localStream){
       localStream = await navigator.mediaDevices.getUserMedia({video:true, audio:false})
-      document.getElementById('user-1').srcObject = localStream
+    
+      let myscreenvideo =  document.getElementById('myscreenvideo');
+  myscreenvideo.srcObject = localStream;
+  myscreenvideo.play();
   }
 
   localStream.getTracks().forEach((track) => {
@@ -418,8 +419,14 @@ let createPeerConnection = async (MemberId) => {
       })
   }
 
+
   peerConnection.onicecandidate = async (event) => {
       if(event.candidate){
+        socket.send(JSON.stringify({ type: "sendicecandidate", data: { 
+          meetingname: localmeetingname,
+           personname: localpersonname,
+           candidate: event.candidate } }));
+  
      //     client.sendMessageToPeer({text:JSON.stringify({'type':'candidate', 'candidate':event.candidate})}, MemberId)
       }
   }
@@ -439,22 +446,40 @@ let showLocalStreamVideo = async (methodprops) => {
 }
 
 let createOffer = async (MemberId) => {
-  await createPeerConnection(MemberId)
+
+  let localmeetingname = localStorage.getItem("localmeetingname");
+  let localpersonname = localStorage.getItem("localpersonname");
+
+  await createPeerConnection({localmeetingname:localmeetingname,localpersonname:localpersonname})
 
   let offer = await peerConnection.createOffer()
   await peerConnection.setLocalDescription(offer)
+
+  socket.send(JSON.stringify({ type: "createoffer", data: { 
+    meetingname: localmeetingname,
+     personname: localpersonname
+      } }));
 
  // client.sendMessageToPeer({text:JSON.stringify({'type':'offer', 'offer':offer})}, MemberId)
 }
 
 
 let createAnswer = async (MemberId, offer) => {
-  await createPeerConnection(MemberId)
+
+  let localmeetingname = localStorage.getItem("localmeetingname");
+  let localpersonname = localStorage.getItem("localpersonname");
+
+  await createPeerConnection({localmeetingname:localmeetingname,localpersonname:localpersonname})
 
   await peerConnection.setRemoteDescription(offer)
 
   let answer = await peerConnection.createAnswer()
   await peerConnection.setLocalDescription(answer)
+
+  socket.send(JSON.stringify({ type: "answer", data: { 
+    meetingname: localmeetingname,
+     personname: localpersonname
+      } }));
 
  // client.sendMessageToPeer({text:JSON.stringify({'type':'answer', 'answer':answer})}, MemberId)
 }
@@ -576,8 +601,12 @@ function App() {
         <div onClick={() => handleClick({ type: "deletemeeting" })} >delete</div>
         <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
-        <div onClick={() => handleClick({ type: "showcameravideo" })} >quit</div>
+        <div onClick={() => handleClick({ type: "showcameravideo" })} >showcameravideo</div>
+        <div onClick={() => createOffer({ type: "createOffer" })} >createOffer</div>
+        <div onClick={() => createAnswer({ type: "createAnswer" })} >createAnswer</div>
        
+        
+
         <video  id="myscreenvideo" ></video>
       
       
