@@ -25,6 +25,12 @@ socket.onmessage = function (event) {
     createMeeting(datafromserver);
   }
   if (datafromserver &&
+    (datafromserver.type === "deletemeeting")
+  ) {
+    deleteMeeting(datafromserver);
+  }
+
+  if (datafromserver &&
     (datafromserver.type === "joinmeeting")
   ) {
     joinMeeting(datafromserver);
@@ -33,11 +39,6 @@ socket.onmessage = function (event) {
     (datafromserver.type === "quitmeeting")
   ) {
     quitMeeting(datafromserver);
-  }
-  if (datafromserver &&
-    (datafromserver.type === "deletemeeting")
-  ) {
-    deleteMeeting(datafromserver);
   }
 
 
@@ -108,69 +109,13 @@ let createMeeting = async (methodprops) => {
   }
 
 }
+let deleteMeeting = async (methodprops) => {
+}
 let joinMeeting = async (methodprops) => {
- 
-  consolelog("joinMeeting",methodprops);
-  let { meetingname, personname } = methodprops.data;
-  let meetingsdata = localStorage.getItem("meetings");
-  let meetingjoineesdata = localStorage.getItem("meetingjoinees");
-  let localpersonname = localStorage.getItem("localpersonname");
-  let ismeetingexists = false;
-  let isalreadyinmeeting = false;
-
-  let meetingsdatajson = [];
-  if (meetingsdata) {
-    meetingsdatajson = JSON.parse(meetingsdata);
-  }
- 
-  let meetingjoineesdatajson = [];
-  if (meetingjoineesdata) {
-    meetingjoineesdatajson = JSON.parse(meetingjoineesdata);
-  }
- 
-  if (meetingsdatajson && meetingsdatajson.length > 0) {
-    for (let i = 0; i < meetingsdatajson.length; i++) {
-      if (meetingsdatajson[i].name === meetingname) {
-        ismeetingexists = true;
-      }
-    }
-
-  }
-
-  if (meetingjoineesdatajson && meetingjoineesdatajson.length > 0) {
-    for (let i = 0; i < meetingjoineesdatajson.length; i++) {
-      if (meetingjoineesdatajson[i].meetingname === meetingname && meetingjoineesdatajson[i].name === personname) {
-        isalreadyinmeeting = true;
-      }
-    }
-
-  }
-
-  if (ismeetingexists === false && localpersonname === personname) {
-    alert("meeting not exists");
-  }
-  else if (isalreadyinmeeting === true && localpersonname === personname) {
-    alert("already in meeting");
-  }
-  else {
-
-    if (meetingjoineesdata && meetingjoineesdata.length > 0) {
-    }
-    else {
-      meetingjoineesdata = [];
-    }
-    let newmeetingjoinee = { meetingname: meetingname, name:personname };
-    meetingjoineesdata.push(newmeetingjoinee);
-   
-    consolelog("meetingjoineesdata",meetingjoineesdata);
-    localStorage.setItem("meetingjoinees", JSON.stringify(meetingjoineesdata));
-  }
-
 }
 let quitMeeting = async (methodprops) => {
 }
-let deleteMeeting = async (methodprops) => {
-}
+
 
 
 function App() {
@@ -226,13 +171,13 @@ function App() {
     let localmeetingname = localStorage.getItem("localmeetingname");
     let localpersonname = localStorage.getItem("localpersonname");
     if (type === "createmeeting") {
-      socket.send(JSON.stringify({ type: "createmeeting", data: { meetingname: localmeetingname, personame: localpersonname } }));
+      socket.send(JSON.stringify({ type: "createmeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
     }
     if (type === "joinmeeting") {
-      socket.send(JSON.stringify({ type: "joinmeeting", data: { meetingname: localmeetingname, personame: localpersonname } }));
+      socket.send(JSON.stringify({ type: "joinmeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
     }
     if (type === "quitmeeting") {
-      socket.send(JSON.stringify({ type: "quitmeeting", data: { meetingname: localmeetingname, personame: localpersonname } }));
+      socket.send(JSON.stringify({ type: "quitmeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
     }
 
   }
@@ -263,9 +208,10 @@ function App() {
           defaultValue={compstate.personname}
         />
         <div onClick={() => handleClick({ type: "createmeeting" })} >create</div>
+        <div onClick={() => handleClick({ type: "deletemeeting" })} >delete</div>
         <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
-        <div onClick={() => handleClick({ type: "deletemeeting" })} >delete</div>
+       
       </div>
 
     );
