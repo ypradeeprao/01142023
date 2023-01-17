@@ -488,7 +488,11 @@ function App() {
         video.srcObject = stream;
         video.play();
 
-        document.getElementById('myscreenvideo').srcObject = localStream;
+        let myscreenvideo =  document.getElementById('myscreenvideo');
+        myscreenvideo.srcObject = stream;
+        myscreenvideo.play();
+
+        
       })
       .catch(err => {
         console.error("error:", err);
@@ -588,7 +592,7 @@ function App() {
         <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
        
-        <video  id="myscreenvideo" width="640" height="480px" autoplay playsinline style={{width:"640px", height:"480px", backgroundColor:"black"}}></video>
+        <video  id="myscreenvideo" ></video>
         <video ref={videoRef}/>
         <button id="showVideo">Open camera</button>
       </div>
