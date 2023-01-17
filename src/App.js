@@ -47,7 +47,7 @@ if(localpersonname !== personname){
     quitMeeting(datafromserver);
   }
   if (datafromserver &&
-    (datafromserver.type === "offer") &&
+    (datafromserver.type === "createoffer") &&
     datafromserver.data.offer
   ) {
     createAnswer(datafromserver.data.offer);
