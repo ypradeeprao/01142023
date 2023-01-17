@@ -62,35 +62,95 @@ let createMeeting = async (methodprops) => {
   console.log(methodprops);
   let { meetingname, personname } = methodprops.data;
   let meetingsdata = localStorage.getItem("meetings");
+  let meetingsdatajson = [];
+  if (meetingsdata) {
+    meetingsdatajson = JSON.parse(meetingsdata);
+  }
+ 
   let localpersonname = localStorage.getItem("localpersonname");
-  let isalreadyexists = false;
-  if (meetingsdata && meetingsdata.length > 0) {
-    for (let i = 0; i < meetingsdata.length; i++) {
-      if (meetingsdata[i].name === meetingname) {
-        isalreadyexists = true;
+  let ismeetingalreadyexists = false;
+  if (meetingsdatajson && meetingsdatajson.length > 0) {
+    for (let i = 0; i < meetingsdatajson.length; i++) {
+      if (meetingsdatajson[i].name === meetingname) {
+        ismeetingalreadyexists = true;
       }
     }
 
   }
 
-  if (isalreadyexists === true && localpersonname === personname) {
+  if (ismeetingalreadyexists === true && localpersonname === personname) {
     alert("meeting already exists");
   }
   else {
 
-    if (meetingsdata && meetingsdata.length > 0) {
+    if (meetingsdatajson && meetingsdatajson.length > 0) {
     }
     else {
-      meetingsdata = [];
+      meetingsdatajson = [];
     }
     let newmeeting = { name: meetingname };
-    meetingsdata.push(newmeeting);
-    console.log(meetingsdata);
-    localStorage.setItem("meetings", JSON.stringify(meetingsdata));
+    meetingsdatajson.push(newmeeting);
+    console.log(meetingsdatajson);
+    localStorage.setItem("meetings", JSON.stringify(meetingsdatajson));
   }
 
 }
 let joinMeeting = async (methodprops) => {
+  console.log(methodprops);
+  let { meetingname, personname } = methodprops.data;
+  let meetingsdata = localStorage.getItem("meetings");
+  let meetingjoineesdata = localStorage.getItem("meetingjoinees");
+  let localpersonname = localStorage.getItem("localpersonname");
+  let ismeetingexists = false;
+  let isalreadyinmeeting = false;
+
+  let meetingsdatajson = [];
+  if (meetingsdata) {
+    meetingsdatajson = JSON.parse(meetingsdata);
+  }
+ 
+  let meetingjoineesdatajson = [];
+  if (meetingjoineesdata) {
+    meetingjoineesdatajson = JSON.parse(meetingjoineesdata);
+  }
+ 
+  if (meetingsdatajson && meetingsdatajson.length > 0) {
+    for (let i = 0; i < meetingsdatajson.length; i++) {
+      if (meetingsdatajson[i].name === meetingname) {
+        ismeetingexists = true;
+      }
+    }
+
+  }
+
+  if (meetingjoineesdatajson && meetingjoineesdatajson.length > 0) {
+    for (let i = 0; i < meetingjoineesdatajson.length; i++) {
+      if (meetingjoineesdatajson[i].meetingname === meetingname && meetingjoineesdatajson[i].name === personname) {
+        isalreadyinmeeting = true;
+      }
+    }
+
+  }
+
+  if (ismeetingexists === false && localpersonname === personname) {
+    alert("meeting not exists");
+  }
+  else if (isalreadyinmeeting === true && localpersonname === personname) {
+    alert("already in meeting");
+  }
+  else {
+
+    if (meetingjoineesdata && meetingjoineesdata.length > 0) {
+    }
+    else {
+      meetingjoineesdata = [];
+    }
+    let newmeetingjoinee = { meetingname: meetingname, name:personname };
+    meetingjoineesdata.push(newmeetingjoinee);
+    console.log(meetingjoineesdata);
+    localStorage.setItem("meetingjoinees", JSON.stringify(meetingjoineesdata));
+  }
+
 }
 let quitMeeting = async (methodprops) => {
 }
