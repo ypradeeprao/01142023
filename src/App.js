@@ -59,6 +59,7 @@ socket.onerror = function (error) {
 };
 
 let createMeeting = async (methodprops) => {
+  console.log(methodprops);
   let {meetingname, personname} = methodprops;
   let meetingsdata = localStorage.getItem("meetings");
   let localpersonname = localStorage.getItem("localpersonname");
@@ -84,7 +85,7 @@ let createMeeting = async (methodprops) => {
       }
       let newmeeting = {name:meetingname};
       meetingsdata.push(newmeeting);
-      localStorage.setItem("meetings",meetingsdata);
+      localStorage.setItem("meetings",JSON.stringify(meetingsdata));
     }
 
 }
