@@ -174,6 +174,13 @@ let joinMeeting = async (methodprops) => {
   }
 
 
+  let meetingpeerconnectionsdata = localStorage.getItem("meetingpeerconnections");
+  let meetingpeerconnectionsdatajson = [];
+  if (meetingpeerconnectionsdata) {
+    meetingpeerconnectionsdatajson = JSON.parse(meetingpeerconnectionsdata);
+  }
+
+
   let localpersonname = localStorage.getItem("localpersonname");
   let ismeetingalreadyexists = false;
   let ismeetingjoineealreadyexists = false;
@@ -198,6 +205,12 @@ let joinMeeting = async (methodprops) => {
       consolelog("meetingname",meetingname);
       if (meetingjoineesdatajson[i].meetingname === meetingname && meetingjoineesdatajson[i].name === personname) {
         ismeetingjoineealreadyexists = true;
+      }
+      if (meetingjoineesdatajson[i].meetingname === meetingname && meetingjoineesdatajson[i].name !== personname) {
+        let newmeetingpeerconnection = { requestfromname: personname, requesttoname:meetingjoineesdatajson[i].name,
+           meetingname: meetingname};
+
+        meetingpeerconnectionsdatajson.push(newmeetingpeerconnection);
       }
     }
 
@@ -232,6 +245,9 @@ let joinMeeting = async (methodprops) => {
     meetingjoineesdatajson.push(newmeetingjoinee);
     consolelog("meetingjoineesdatajson",meetingjoineesdatajson);
     localStorage.setItem("meetingjoinees", JSON.stringify(meetingjoineesdatajson));
+    if(meetingpeerconnectionsdatajson && meetingpeerconnectionsdatajson.length > 0){
+    localStorage.setItem("meetingpeerconnections", JSON.stringify(meetingpeerconnectionsdatajson));
+    }
   }
 
 }
@@ -252,6 +268,15 @@ let quitMeeting = async (methodprops) => {
   if (meetingjoineesdata) {
     meetingjoineesdatajson = JSON.parse(meetingjoineesdata);
   }
+
+
+  let meetingpeerconnectionsdata = localStorage.getItem("meetingpeerconnections");
+  let meetingpeerconnectionsdatajson = [];
+  let meetingpeerconnectionsdatajsonU= [];
+  if (meetingpeerconnectionsdata) {
+    meetingpeerconnectionsdatajson = JSON.parse(meetingpeerconnectionsdata);
+  }
+
 
 
   let localpersonname = localStorage.getItem("localpersonname");
@@ -282,10 +307,32 @@ let quitMeeting = async (methodprops) => {
       else{
         meetingjoineesdatajsonU.push(meetingjoineesdatajson[i]);
       }
+
     }
 
   }
 
+
+
+  if (meetingpeerconnectionsdatajson && meetingpeerconnectionsdatajson.length > 0) {
+   
+    consolelog("meetingpeerconnectionsdatajson",meetingpeerconnectionsdatajson);
+    for (let i = 0; i < meetingpeerconnectionsdatajson.length; i++) {
+      consolelog("meetingpeerconnectionsdatajson[i].name",meetingpeerconnectionsdatajson[i].name);
+      consolelog("meetingname",meetingname);
+      if (meetingpeerconnectionsdatajson[i].meetingname === meetingname 
+        &&( meetingpeerconnectionsdatajson[i].requestfromname === personname
+        || meetingpeerconnectionsdatajson[i].requesttoname === personname)) {
+       
+      }
+      else{
+        meetingpeerconnectionsdatajsonU.push(meetingpeerconnectionsdatajson[i]);
+      }
+
+    }
+
+  }
+  
 
 
   consolelog("ismeetingalreadyexists",ismeetingalreadyexists);
@@ -309,6 +356,9 @@ let quitMeeting = async (methodprops) => {
 
     consolelog("meetingjoineesdatajsonU",meetingjoineesdatajsonU);
     localStorage.setItem("meetingjoinees", JSON.stringify(meetingjoineesdatajsonU));
+    if(meetingpeerconnectionsdatajsonU.length > 0){
+      localStorage.setItem("meetingpeerconnections", JSON.stringify(meetingpeerconnectionsdatajsonU));
+    }
   }
 
 }
