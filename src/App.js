@@ -575,6 +575,16 @@ myscreenvideo.play();
 }
 
 async function handleOffer(methodprops) {
+
+  if(!localStream){
+    localStream = await navigator.mediaDevices.getUserMedia({video:true, audio:false})
+  
+    let myscreenvideo =  document.getElementById('myscreenvideo');
+myscreenvideo.srcObject = localStream;
+myscreenvideo.play();
+}
+
+
   let {offer, meetingname, personname} = methodprops.data;
   let localmeetingname = localStorage.getItem("localmeetingname");
   let localpersonname = localStorage.getItem("localpersonname");
@@ -628,7 +638,7 @@ if(localpersonname !== personname){
     console.error('no peerconnection');
     return;
   }
-  if (!candidate.candidate) {
+  if (!candidate || !candidate.candidate) {
     await pc.addIceCandidate(null);
   } else {
     await pc.addIceCandidate(candidate);
