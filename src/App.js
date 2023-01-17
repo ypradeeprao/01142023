@@ -16,7 +16,7 @@ socket.onopen = function (e) {
 socket.onmessage = function (event) {
  
   let datafromserver = JSON.parse(event.data);
-  let {answer, meetingname, personname} = datafromserver;
+  let {answer, meetingname, personname} = datafromserver.data;
   let localmeetingname = localStorage.getItem("localmeetingname");
   let localpersonname = localStorage.getItem("localpersonname");
   consolelog("localpersonname",localpersonname);
