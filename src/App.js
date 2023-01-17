@@ -8,7 +8,7 @@ let socket = new WebSocket("wss://s8239.nyc1.piesocket.com/v3/1?api_key=eWE09fv3
 socket.onopen = function(e) {
   console.log("[open] Connection established");
   console.log("Sending to server");
-  socket.send("My name is John");
+  //socket.send("My name is John");
 };
 
 socket.onmessage = function(event) {
