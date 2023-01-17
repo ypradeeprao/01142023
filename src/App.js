@@ -247,6 +247,7 @@ let joinMeeting = async (methodprops) => {
     localStorage.setItem("meetingjoinees", JSON.stringify(meetingjoineesdatajson));
     if(meetingpeerconnectionsdatajson && meetingpeerconnectionsdatajson.length > 0){
     localStorage.setItem("meetingpeerconnections", JSON.stringify(meetingpeerconnectionsdatajson));
+    await resetPeerConnections();
     }
   }
 
@@ -374,6 +375,23 @@ const servers = {
 let localStream;
 let remoteStream;
 let peerConnection;
+let resetPeerConnections = async (methodprops) => {
+  consolelog("resetPeerConnections",methodprops);
+
+  let meetingjoineesdata = localStorage.getItem("meetingjoinees");
+  let meetingjoineesdatajson = [];
+  if (meetingjoineesdata) {
+    meetingjoineesdatajson = JSON.parse(meetingjoineesdata);
+  }
+
+
+  let meetingpeerconnectionsdata = localStorage.getItem("meetingpeerconnections");
+  let meetingpeerconnectionsdatajson = [];
+  if (meetingpeerconnectionsdata) {
+    meetingpeerconnectionsdatajson = JSON.parse(meetingpeerconnectionsdata);
+  }
+ await showLocalStreamVideo();
+}
 
 let createPeerConnection = async (MemberId) => {
   peerConnection = new RTCPeerConnection(servers)
@@ -407,6 +425,17 @@ let createPeerConnection = async (MemberId) => {
   }
 }
 
+let showLocalStreamVideo = async (MemberId) => {
+  let constraints = {
+    video:{
+        width:{min:640, ideal:1920, max:1920},
+        height:{min:480, ideal:1080, max:1080},
+    },
+    audio:true
+};
+  localStream = await navigator.mediaDevices.getUserMedia(constraints);
+  document.getElementById('myscreenvideo').srcObject = localStream;
+}
 
 let createOffer = async (MemberId) => {
   await createPeerConnection(MemberId)
@@ -534,6 +563,8 @@ function App() {
         <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
        
+        <video  id="myscreenvideo" autoplay playsinline style={{width:"300px", height:"300px", backgroundColor:"black"}}></video>
+
       </div>
 
     );
