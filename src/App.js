@@ -557,6 +557,9 @@ function App() {
     if (type === "quitmeeting") {
       socket.send(JSON.stringify({ type: "quitmeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
     }
+    if (type === "showcameravideo") {
+      showLocalStreamVideo();
+    }
 
   }
 
@@ -589,6 +592,7 @@ function App() {
         <div onClick={() => handleClick({ type: "deletemeeting" })} >delete</div>
         <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
+        <div onClick={() => handleClick({ type: "showcameravideo" })} >quit</div>
        
         <video  id="myscreenvideo" ></video>
         <video ref={videoRef}/>
