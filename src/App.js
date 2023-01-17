@@ -14,9 +14,13 @@ socket.onopen = function (e) {
 
 
 socket.onmessage = function (event) {
-  consolelog("onmessageevent",event);
-  let datafromserver = JSON.parse(event.data);
  
+  let datafromserver = JSON.parse(event.data);
+  let {answer, meetingname, personname} = datafromserver;
+  let localmeetingname = localStorage.getItem("localmeetingname");
+  let localpersonname = localStorage.getItem("localpersonname");
+if(localpersonname !== personname){
+  consolelog("onmessageevent",event);
   consolelog("datafromserver",datafromserver);
 
   if (datafromserver &&
@@ -55,7 +59,7 @@ socket.onmessage = function (event) {
   ) {
     handleCandidate(datafromserver);
   }
-
+}
 
 };
 
