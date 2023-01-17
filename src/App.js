@@ -16,8 +16,8 @@ socket.onopen = function (e) {
 socket.onmessage = function (event) {
   consolelog("onmessageevent",event);
   let datafromserver = JSON.parse(event.data);
-
-
+ 
+  consolelog("datafromserver",datafromserver);
 
   if (datafromserver &&
     (datafromserver.type === "createmeeting")
