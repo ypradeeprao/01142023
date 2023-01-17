@@ -236,7 +236,83 @@ let joinMeeting = async (methodprops) => {
 
 }
 let quitMeeting = async (methodprops) => {
+  
+  consolelog("quitMeeting",methodprops);
+  let { meetingname, personname } = methodprops.data;
+  let meetingsdata = localStorage.getItem("meetings");
+  let meetingsdatajson = [];
+  if (meetingsdata) {
+    meetingsdatajson = JSON.parse(meetingsdata);
+  }
+ 
+
+  let meetingjoineesdata = localStorage.getItem("meetingjoinees");
+  let meetingjoineesdatajson = [];
+  let meetingjoineesdatajsonU = [];
+  if (meetingjoineesdata) {
+    meetingjoineesdatajson = JSON.parse(meetingjoineesdata);
+  }
+
+
+  let localpersonname = localStorage.getItem("localpersonname");
+  let ismeetingalreadyexists = false;
+  let ismeetingjoineealreadyexists = false;
+  if (meetingsdatajson && meetingsdatajson.length > 0) {
+   
+    consolelog("meetingsdatajson",meetingsdatajson);
+    for (let i = 0; i < meetingsdatajson.length; i++) {
+      consolelog("meetingsdatajson[i].name",meetingsdatajson[i].name);
+      consolelog("meetingname",meetingname);
+      if (meetingsdatajson[i].name === meetingname) {
+        ismeetingalreadyexists = true;
+      }
+    }
+
+  }
+
+  if (meetingjoineesdatajson && meetingjoineesdatajson.length > 0) {
+   
+    consolelog("meetingjoineesdatajson",meetingjoineesdatajson);
+    for (let i = 0; i < meetingjoineesdatajson.length; i++) {
+      consolelog("meetingjoineesdatajson[i].name",meetingjoineesdatajson[i].name);
+      consolelog("meetingname",meetingname);
+      if (meetingjoineesdatajson[i].meetingname === meetingname && meetingjoineesdatajson[i].name === personname) {
+        ismeetingjoineealreadyexists = true;
+      }
+      else{
+        meetingjoineesdatajsonU.push(meetingjoineesdatajson[i]);
+      }
+    }
+
+  }
+
+
+
+  consolelog("ismeetingalreadyexists",ismeetingalreadyexists);
+  consolelog("localpersonname",localpersonname);
+  consolelog("personname",personname);
+
+  if (ismeetingalreadyexists === false && localpersonname === personname) {
+    alert("meeting not exists");
+  }
+  else if (ismeetingalreadyexists === false && localpersonname !== personname) {
+    
+  }
+  else if (ismeetingjoineealreadyexists === false && localpersonname === personname) {
+    alert("meeting joinee not exists");
+  }
+  else if (ismeetingjoineealreadyexists === false && localpersonname !== personname) {
+    
+  }
+  else {
+
+
+    consolelog("meetingjoineesdatajsonU",meetingjoineesdatajsonU);
+    localStorage.setItem("meetingjoinees", JSON.stringify(meetingjoineesdatajsonU));
+  }
+
 }
+
 
 
 
