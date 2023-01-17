@@ -430,6 +430,14 @@ let createPeerConnection = async (methodprops) => {
   myscreenvideo.play();
   }
 
+  if(remoteStream){
+   
+  
+    let remotescreenvideo =  document.getElementById('remotescreenvideo');
+    remotescreenvideo.srcObject = remoteStream;
+    remotescreenvideo.play();
+}
+
   localStream.getTracks().forEach((track) => {
       peerConnection.addTrack(track, localStream)
   })
@@ -636,6 +644,7 @@ function App() {
         
 
         <video  id="myscreenvideo" ></video>
+        <video  id="remotescreenvideo" ></video>
       
         <video id="localVideo" playsinline autoplay muted></video>
     <video id="remoteVideo" playsinline autoplay></video>
