@@ -594,10 +594,10 @@ myscreenvideo.play();
   let localpersonname = localStorage.getItem("localpersonname");
 if(localpersonname !== personname){
   consolelog("handleOffer",methodprops);
-  if (pc) {
-    console.error('existing peerconnection');
-    return;
-  }
+  // if (pc) {
+  //   console.error('existing peerconnection');
+  //   return;
+  // }
   await createPeerConnection2();
   await pc.setRemoteDescription(offer);
 
