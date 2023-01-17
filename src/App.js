@@ -20,7 +20,7 @@ socket.onmessage = function(event) {
      ){
     localStorage.setItem(
       "totaljson",
-      event.data
+      datafromserver.totaldataJson
     );
   }
 
