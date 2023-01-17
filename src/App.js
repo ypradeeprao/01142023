@@ -55,10 +55,10 @@ if(localpersonname !== personname){
   if (datafromserver &&
     (datafromserver.type === "answer")
   ) {
-  //  handleAnswer(datafromserver);
+    addAnswer(datafromserver.data.answer);
   }
   if (datafromserver &&
-    (datafromserver.type === "candidate")
+    (datafromserver.type === "sendicecandidate")
   ) {
   //  handleCandidate(datafromserver);
   }
