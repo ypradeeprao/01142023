@@ -6,15 +6,15 @@ let socket = new WebSocket("wss://s8239.nyc1.piesocket.com/v3/1?api_key=eWE09fv3
 
 
 socket.onopen = function (e) {
-  console.log("[open] Connection established");
-  console.log("Sending to server");
+  consolelog("[open] Connection established");
+  consolelog("Sending to server");
   //socket.send("My name is John");
 };
 
 
 
 socket.onmessage = function (event) {
-  console.log(event);
+  consolelog("onmessageevent",event);
   let datafromserver = JSON.parse(event.data);
 
 
@@ -46,20 +46,25 @@ socket.onmessage = function (event) {
 
 socket.onclose = function (event) {
   if (event.wasClean) {
-    console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+    consolelog(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
   } else {
     // e.g. server process killed or network down
     // event.code is usually 1006 in this case
-    console.log('[close] Connection died');
+    consolelog('[close] Connection died');
   }
 };
 
 socket.onerror = function (error) {
-  console.log(`[error]`);
+  consolelog(`[error]`);
 };
 
+let consolelog = (a,b)=>{
+console.log(a);
+console.log(b);
+};
 let createMeeting = async (methodprops) => {
-  console.log(methodprops);
+  
+  consolelog("createMeeting",methodprops);
   let { meetingname, personname } = methodprops.data;
   let meetingsdata = localStorage.getItem("meetings");
   let meetingsdatajson = [];
@@ -70,13 +75,21 @@ let createMeeting = async (methodprops) => {
   let localpersonname = localStorage.getItem("localpersonname");
   let ismeetingalreadyexists = false;
   if (meetingsdatajson && meetingsdatajson.length > 0) {
+   
+    consolelog("meetingsdatajson",meetingsdatajson);
     for (let i = 0; i < meetingsdatajson.length; i++) {
+      consolelog("meetingsdatajson[i].name",meetingsdatajson[i].name);
+      consolelog("meetingname",meetingname);
       if (meetingsdatajson[i].name === meetingname) {
         ismeetingalreadyexists = true;
       }
     }
 
   }
+
+  consolelog("ismeetingalreadyexists",ismeetingalreadyexists);
+  consolelog("localpersonname",localpersonname);
+  consolelog("personname",personname);
 
   if (ismeetingalreadyexists === true && localpersonname === personname) {
     alert("meeting already exists");
@@ -90,13 +103,14 @@ let createMeeting = async (methodprops) => {
     }
     let newmeeting = { name: meetingname };
     meetingsdatajson.push(newmeeting);
-    console.log(meetingsdatajson);
+    consolelog("meetingsdatajson",meetingsdatajson);
     localStorage.setItem("meetings", JSON.stringify(meetingsdatajson));
   }
 
 }
 let joinMeeting = async (methodprops) => {
-  console.log(methodprops);
+ 
+  consolelog("joinMeeting",methodprops);
   let { meetingname, personname } = methodprops.data;
   let meetingsdata = localStorage.getItem("meetings");
   let meetingjoineesdata = localStorage.getItem("meetingjoinees");
@@ -147,7 +161,8 @@ let joinMeeting = async (methodprops) => {
     }
     let newmeetingjoinee = { meetingname: meetingname, name:personname };
     meetingjoineesdata.push(newmeetingjoinee);
-    console.log(meetingjoineesdata);
+   
+    consolelog("meetingjoineesdata",meetingjoineesdata);
     localStorage.setItem("meetingjoinees", JSON.stringify(meetingjoineesdata));
   }
 
@@ -192,8 +207,8 @@ function App() {
 
   let handleChange = async (methodprops) => {
     let { type, value } = methodprops;
-    console.log(methodprops);
-
+   
+    consolelog("handleChange",methodprops);
     if (type === "meetingname") {
       //   await showui({ "meetingname": value });
       localStorage.setItem("localmeetingname", value);
@@ -206,7 +221,8 @@ function App() {
 
   let handleClick = async (methodprops) => {
     let { type } = methodprops;
-    console.log(methodprops);
+    
+    consolelog("handleClick",methodprops);
     let localmeetingname = localStorage.getItem("localmeetingname");
     let localpersonname = localStorage.getItem("localpersonname");
     if (type === "createmeeting") {
@@ -222,7 +238,7 @@ function App() {
   }
 
 
-  console.log(compstate);
+
   if (compstate.showui !== true) {
     return <></>;
   } else {
