@@ -196,7 +196,7 @@ let joinMeeting = async (methodprops) => {
     for (let i = 0; i < meetingjoineesdatajson.length; i++) {
       consolelog("meetingjoineesdatajson[i].name",meetingjoineesdatajson[i].name);
       consolelog("meetingname",meetingname);
-      if (meetingjoineesdatajson[i].meetingname === meetingname && meetingjoineesdatajson[i].name === meetingname) {
+      if (meetingjoineesdatajson[i].meetingname === meetingname && meetingjoineesdatajson[i].name === personname) {
         ismeetingjoineealreadyexists = true;
       }
     }
