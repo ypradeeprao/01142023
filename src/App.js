@@ -1,6 +1,6 @@
 
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 let socket = new WebSocket("wss://s8239.nyc1.piesocket.com/v3/1?api_key=eWE09fv3RllnW6tVNzfP85M4rCn6ckxRQfHLP4aX&notify_self=1");
 
 
@@ -468,19 +468,30 @@ let addAnswer = async (answer) => {
 
 
 function App() {
-
+  const videoRef = useRef(null);
   const [compstate, setCompstate] = useState({
     showui: true,
 
   });
 
   useEffect(() => {
-    getData();
+   // getData();
 
-    
+    getVideo();
   }, []);
 
-
+  const getVideo = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: { width: 300 } })
+      .then(stream => {
+        let video = videoRef.current;
+        video.srcObject = stream;
+        video.play();
+      })
+      .catch(err => {
+        console.error("error:", err);
+      });
+  };
 
 
   let getData = async (methodprops) => {
@@ -576,7 +587,7 @@ function App() {
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
        
         <video  id="myscreenvideo" width="640" height="480px" autoplay playsinline style={{width:"640px", height:"480px", backgroundColor:"black"}}></video>
-        <video id="gum-local" autoplay playsinline></video>
+        <video ref={videoRef}/>
         <button id="showVideo">Open camera</button>
       </div>
 
