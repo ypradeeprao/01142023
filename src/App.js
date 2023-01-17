@@ -516,141 +516,7 @@ let addAnswer = async (answer) => {
   }
 }
 
-let pc;
 
-function createPeerConnection2() {
-  let localmeetingname = localStorage.getItem("localmeetingname");
-  let localpersonname = localStorage.getItem("localpersonname");
-
-  pc = new RTCPeerConnection();
-  pc.onicecandidate = e => {
-    const message = {
-      type: 'candidate',
-      candidate: null,
-    };
-    if (e.candidate) {
-      message.candidate = e.candidate.candidate;
-      message.sdpMid = e.candidate.sdpMid;
-      message.sdpMLineIndex = e.candidate.sdpMLineIndex;
-    }
-    //signaling.postMessage(message);
-    socket.send(JSON.stringify({ 
-      type: "candidate", 
-      data: { 
-      meetingname: localmeetingname,
-       personname: localpersonname,
-       candidate:message.candidate
-        }
-       }));
-  };
-  pc.ontrack = e => document.getElementById('remoteVideo').srcObject = e.streams[0];
-
- 
-  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-}
-
-
-
-
-
-async function makeCall() {
-  if(!localStream){
-    localStream = await navigator.mediaDevices.getUserMedia({video:true, audio:false})
-  
-    let myscreenvideo =  document.getElementById('myscreenvideo');
-myscreenvideo.srcObject = localStream;
-myscreenvideo.play();
-}
-
-  await createPeerConnection2();
-  let localmeetingname = localStorage.getItem("localmeetingname");
-  let localpersonname = localStorage.getItem("localpersonname");
-  const offer = await pc.createOffer();
-  //signaling.postMessage({type: 'offer', sdp: offer.sdp});
-
-  socket.send(JSON.stringify({ 
-    type: "offer", 
-    data: { 
-    meetingname: localmeetingname,
-     personname: localpersonname,
-     sdp:offer.sdp
-      }
-     }));
-
-  await pc.setLocalDescription(offer);
-}
-
-async function handleOffer(methodprops) {
-
-  if(!localStream){
-    localStream = await navigator.mediaDevices.getUserMedia({video:true, audio:false})
-  
-    let myscreenvideo =  document.getElementById('myscreenvideo');
-myscreenvideo.srcObject = localStream;
-myscreenvideo.play();
-}
-
-
-  let {offer, meetingname, personname} = methodprops.data;
-  let localmeetingname = localStorage.getItem("localmeetingname");
-  let localpersonname = localStorage.getItem("localpersonname");
-if(localpersonname !== personname){
-  consolelog("handleOffer",methodprops);
-  // if (pc) {
-  //   console.error('existing peerconnection');
-  //   return;
-  // }
-  await createPeerConnection2();
-  await pc.setRemoteDescription(offer);
-
-  const answer = await pc.createAnswer();
-
-  socket.send(JSON.stringify({ 
-    type: "offer", 
-    data: { 
-    meetingname: localmeetingname,
-     personname: localpersonname,
-     answer:answer.sdp
-      }
-     }));
-
- // signaling.postMessage({type: 'answer', sdp: answer.sdp});
-  await pc.setLocalDescription(answer);
-    }
-  
-}
-
-async function handleAnswer(methodprops) {
-  let {answer, meetingname, personname} = methodprops.data;
-  let localmeetingname = localStorage.getItem("localmeetingname");
-  let localpersonname = localStorage.getItem("localpersonname");
-if(localpersonname !== personname){
-  consolelog("handleAnswer",methodprops);
-  if (!pc) {
-    console.error('no peerconnection');
-    return;
-  }
-  await pc.setRemoteDescription(answer);
-}
-}
-
-async function handleCandidate(methodprops) {
-  let {candidate, meetingname, personname} = methodprops.data;
-  let localmeetingname = localStorage.getItem("localmeetingname");
-  let localpersonname = localStorage.getItem("localpersonname");
-if(localpersonname !== personname){
-  consolelog("handleCandidate",methodprops);
-  if (!pc) {
-    console.error('no peerconnection');
-    return;
-  }
-  if (!candidate || !candidate.candidate) {
-    await pc.addIceCandidate(null);
-  } else {
-    await pc.addIceCandidate(candidate);
-  }
-}
-}
 
 
 function App() {
@@ -763,7 +629,7 @@ function App() {
         <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
         <div onClick={() => handleClick({ type: "showcameravideo" })} >showcameravideo</div>
-        <div onClick={() => makeCall({ type: "makeCall" })} >createOffer</div>
+        <div onClick={() => createOffer({ type: "makeCall" })} >createOffer</div>
         <div onClick={() => createAnswer({ type: "createAnswer" })} >createAnswer</div>
        
         
