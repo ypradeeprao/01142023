@@ -457,7 +457,8 @@ let createOffer = async (MemberId) => {
 
   socket.send(JSON.stringify({ type: "createoffer", data: { 
     meetingname: localmeetingname,
-     personname: localpersonname
+     personname: localpersonname,
+     offer:offer
       } }));
 
  // client.sendMessageToPeer({text:JSON.stringify({'type':'offer', 'offer':offer})}, MemberId)
@@ -476,10 +477,14 @@ let createAnswer = async (MemberId, offer) => {
   let answer = await peerConnection.createAnswer()
   await peerConnection.setLocalDescription(answer)
 
-  socket.send(JSON.stringify({ type: "answer", data: { 
+  socket.send(JSON.stringify({ 
+    type: "answer", 
+    data: { 
     meetingname: localmeetingname,
-     personname: localpersonname
-      } }));
+     personname: localpersonname,
+     answer:answer
+      }
+     }));
 
  // client.sendMessageToPeer({text:JSON.stringify({'type':'answer', 'answer':answer})}, MemberId)
 }
