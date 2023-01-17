@@ -47,9 +47,10 @@ if(localpersonname !== personname){
     quitMeeting(datafromserver);
   }
   if (datafromserver &&
-    (datafromserver.type === "offer")
+    (datafromserver.type === "offer") &&
+    datafromserver.data.offer
   ) {
-   // handleOffer(datafromserver);
+    createAnswer(datafromserver.data.offer);
   }
   if (datafromserver &&
     (datafromserver.type === "answer")
@@ -485,7 +486,7 @@ let createOffer = async (MemberId) => {
 }
 
 
-let createAnswer = async (MemberId, offer) => {
+let createAnswer = async (offer) => {
 
   let localmeetingname = localStorage.getItem("localmeetingname");
   let localpersonname = localStorage.getItem("localpersonname");
