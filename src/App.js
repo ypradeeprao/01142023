@@ -84,7 +84,7 @@ let createMeeting = async (methodprops) => {
       }
       let newmeeting = {name:meetingname};
       meetingsdata.push(newmeeting);
-      localStorage.setItem(meetingsdata);
+      localStorage.setItem("meetings",meetingsdata);
     }
 
 }
@@ -156,9 +156,7 @@ function App() {
     if (type === "quitmeeting") {
       socket.send(JSON.stringify({ type: "quitmeeting", data: { meetingname: localmeetingname, personame: localpersonname } }));
     }
-    else {
-      alert("no meeting exists");
-    }
+   
   }
 
 
