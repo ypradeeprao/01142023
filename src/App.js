@@ -19,6 +19,8 @@ socket.onmessage = function (event) {
   let {answer, meetingname, personname} = datafromserver;
   let localmeetingname = localStorage.getItem("localmeetingname");
   let localpersonname = localStorage.getItem("localpersonname");
+  consolelog("localpersonname",localpersonname);
+  consolelog("personname",personname);
 if(localpersonname !== personname){
   consolelog("onmessageevent",event);
   consolelog("datafromserver",datafromserver);
