@@ -1,7 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
 import React, { useState,useEffect, createRef } from 'react';
-import { createChannel, createClient, RtmMessage } from 'agora-rtm-react';
 let socket = new WebSocket("wss://s8239.nyc1.piesocket.com/v3/1?api_key=eWE09fv3RllnW6tVNzfP85M4rCn6ckxRQfHLP4aX&notify_self=1");
 
 
@@ -32,10 +31,7 @@ socket.onerror = function(error) {
 
 
 function App() {
-  const client = useClient();
-  const testChannel = useChannel(client);
 
-  
   const [compstate, setCompstate] = useState({
     showui: true,
     mainpeerconnecionObjArray:[]
