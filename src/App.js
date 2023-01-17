@@ -218,6 +218,9 @@ function App() {
     if (type === "createmeeting") {
       socket.send(JSON.stringify({ type: "createmeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
     }
+    if (type === "deletemeeting") {
+      socket.send(JSON.stringify({ type: "deletemeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
+    }
     if (type === "joinmeeting") {
       socket.send(JSON.stringify({ type: "joinmeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
     }
