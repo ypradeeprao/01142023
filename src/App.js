@@ -484,15 +484,17 @@ function App() {
 
 
   let getData = async (methodprops) => {
-    let constraints = {
-      video:{
-          width:{min:640, ideal:1920, max:1920},
-          height:{min:480, ideal:1080, max:1080},
-      },
-      audio:true
-  };
-    localStream = await navigator.mediaDevices.getUserMedia(constraints);
-    document.getElementById('myscreenvideo').srcObject = localStream;
+    const constraints = window.constraints = {
+      audio: false,
+      video: true
+    };
+     const stream = await navigator.mediaDevices.getUserMedia(constraints);
+     const video = document.querySelector('video');
+     const videoTracks = stream.getVideoTracks();
+     console.log('Got stream with constraints:', constraints);
+     console.log(`Using video device: ${videoTracks[0].label}`);
+     window.stream = stream; // make variable available to browser console
+     video.srcObject = stream;
   }
 
   // let showui = async (methodprops) => {
@@ -573,8 +575,9 @@ function App() {
         <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
        
-        <video  id="myscreenvideo" autoplay playsinline style={{width:"300px", height:"300px", backgroundColor:"black"}}></video>
-
+        <video  id="myscreenvideo" width="640" height="480px" autoplay playsinline style={{width:"640px", height:"480px", backgroundColor:"black"}}></video>
+        <video id="gum-local" autoplay playsinline></video>
+        <button id="showVideo">Open camera</button>
       </div>
 
     );
