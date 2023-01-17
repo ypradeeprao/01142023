@@ -40,7 +40,21 @@ socket.onmessage = function (event) {
   ) {
     quitMeeting(datafromserver);
   }
-
+  if (datafromserver &&
+    (datafromserver.type === "offer")
+  ) {
+   // handleOffer(datafromserver.data.offer);
+  }
+  if (datafromserver &&
+    (datafromserver.type === "answer")
+  ) {
+  //  handleAnswer(datafromserver.data.answer);
+  }
+  if (datafromserver &&
+    (datafromserver.type === "candidate")
+  ) {
+ //   handleCandidate(datafromserver.data.candidate);
+  }
 
 
 };
@@ -496,6 +510,106 @@ let addAnswer = async (answer) => {
   }
 }
 
+let pc;
+
+function createPeerConnection2() {
+  let localmeetingname = localStorage.getItem("localmeetingname");
+  let localpersonname = localStorage.getItem("localpersonname");
+
+  pc = new RTCPeerConnection();
+  pc.onicecandidate = e => {
+    const message = {
+      type: 'candidate',
+      candidate: null,
+    };
+    if (e.candidate) {
+      message.candidate = e.candidate.candidate;
+      message.sdpMid = e.candidate.sdpMid;
+      message.sdpMLineIndex = e.candidate.sdpMLineIndex;
+    }
+    //signaling.postMessage(message);
+    socket.send(JSON.stringify({ 
+      type: "candidate", 
+      data: { 
+      meetingname: localmeetingname,
+       personname: localpersonname,
+       candidate:message.candidate
+        }
+       }));
+  };
+  pc.ontrack = e => document.getElementById('remoteVideo').srcObject = e.streams[0];
+  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+}
+
+
+
+
+
+async function makeCall() {
+  await createPeerConnection2();
+  let localmeetingname = localStorage.getItem("localmeetingname");
+  let localpersonname = localStorage.getItem("localpersonname");
+  const offer = await pc.createOffer();
+  //signaling.postMessage({type: 'offer', sdp: offer.sdp});
+
+  socket.send(JSON.stringify({ 
+    type: "offer", 
+    data: { 
+    meetingname: localmeetingname,
+     personname: localpersonname,
+     sdp:offer.sdp
+      }
+     }));
+
+  await pc.setLocalDescription(offer);
+}
+
+async function handleOffer(offer) {
+  let localmeetingname = localStorage.getItem("localmeetingname");
+  let localpersonname = localStorage.getItem("localpersonname");
+
+  if (pc) {
+    console.error('existing peerconnection');
+    return;
+  }
+  await createPeerConnection2();
+  await pc.setRemoteDescription(offer);
+
+  const answer = await pc.createAnswer();
+
+  socket.send(JSON.stringify({ 
+    type: "offer", 
+    data: { 
+    meetingname: localmeetingname,
+     personname: localpersonname,
+     answer:answer.sdp
+      }
+     }));
+
+ // signaling.postMessage({type: 'answer', sdp: answer.sdp});
+  await pc.setLocalDescription(answer);
+}
+
+async function handleAnswer(answer) {
+  if (!pc) {
+    console.error('no peerconnection');
+    return;
+  }
+  await pc.setRemoteDescription(answer);
+}
+
+async function handleCandidate(candidate) {
+  if (!pc) {
+    console.error('no peerconnection');
+    return;
+  }
+  if (!candidate.candidate) {
+    await pc.addIceCandidate(null);
+  } else {
+    await pc.addIceCandidate(candidate);
+  }
+}
+
 
 function App() {
   
@@ -607,13 +721,15 @@ function App() {
         <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
         <div onClick={() => handleClick({ type: "showcameravideo" })} >showcameravideo</div>
-        <div onClick={() => createOffer({ type: "createOffer" })} >createOffer</div>
+        <div onClick={() => createOffer({ type: "makeCall" })} >createOffer</div>
         <div onClick={() => createAnswer({ type: "createAnswer" })} >createAnswer</div>
        
         
 
         <video  id="myscreenvideo" ></video>
       
+        <video id="localVideo" playsinline autoplay muted></video>
+    <video id="remoteVideo" playsinline autoplay></video>
       
        
        
