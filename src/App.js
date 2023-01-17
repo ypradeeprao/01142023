@@ -14,11 +14,17 @@ socket.onopen = function(e) {
 socket.onmessage = function(event) {
   let datafromserver = JSON.parse(event.data);
   console.log(datafromserver);
-
-  localStorage.setItem(
+  if(datafromserver &&
+     (datafromserver.type == "createmeeting" ||datafromserver.type == "joinmeeting"
+     ||datafromserver.type == "quitmeeting")
+     ){
+    localStorage.setItem(
       "totaljson",
       event.data
     );
+  }
+
+  
 };
 
 socket.onclose = function(event) {
@@ -106,7 +112,7 @@ function App() {
       totaldataJson.meetings[compstate.meetingname] = {}
     }
 
-    socket.send(JSON.stringify(totaldataJson));
+    socket.send(JSON.stringify({type:"createmeeting",totaldataJson:totaldataJson}));
     // await localStorage.setItem(
     //   "totaljson",
     //   JSON.stringify(totaldataJson)
@@ -173,8 +179,9 @@ function App() {
         //   JSON.stringify(totaldataJson)
         // );
 
-        socket.send(JSON.stringify(totaldataJson));
-        
+      
+        socket.send(JSON.stringify({type:"joinmeeting",totaldataJson:totaldataJson}));
+   
     }
     else{
       alert("no meeting exists");
@@ -208,7 +215,9 @@ function App() {
         //   "totaljson",
         //   JSON.stringify(totaldataJson)
         // );
-        socket.send(JSON.stringify(totaldataJson));
+        socket.send(JSON.stringify({type:"quitmeeting",totaldataJson:totaldataJson}));
+  
+      
     }
     else{
       alert("no meeting exists");
