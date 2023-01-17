@@ -538,6 +538,8 @@ function createPeerConnection2() {
        }));
   };
   pc.ontrack = e => document.getElementById('remoteVideo').srcObject = e.streams[0];
+
+ 
   localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 }
 
@@ -546,6 +548,14 @@ function createPeerConnection2() {
 
 
 async function makeCall() {
+  if(!localStream){
+    localStream = await navigator.mediaDevices.getUserMedia({video:true, audio:false})
+  
+    let myscreenvideo =  document.getElementById('myscreenvideo');
+myscreenvideo.srcObject = localStream;
+myscreenvideo.play();
+}
+
   await createPeerConnection2();
   let localmeetingname = localStorage.getItem("localmeetingname");
   let localpersonname = localStorage.getItem("localpersonname");
