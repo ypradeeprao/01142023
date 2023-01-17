@@ -468,7 +468,7 @@ let addAnswer = async (answer) => {
 
 
 function App() {
-  const videoRef = useRef(null);
+  
   const [compstate, setCompstate] = useState({
     showui: true,
 
@@ -477,25 +477,9 @@ function App() {
   useEffect(() => {
    // getData();
 
-    getVideo();
+   
   }, []);
 
-  const getVideo = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: { width: 300 } })
-      .then(stream => {
-        let video = videoRef.current;
-        video.srcObject = stream;
-        video.play();
-
-      
-
-        
-      })
-      .catch(err => {
-        console.error("error:", err);
-      });
-  };
 
 
   let getData = async (methodprops) => {
@@ -595,8 +579,10 @@ function App() {
         <div onClick={() => handleClick({ type: "showcameravideo" })} >quit</div>
        
         <video  id="myscreenvideo" ></video>
-        <video ref={videoRef}/>
-        <button id="showVideo">Open camera</button>
+      
+      
+       
+       
       </div>
 
     );
