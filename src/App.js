@@ -215,8 +215,7 @@ let joinMeeting = async (methodprops) => {
   else if (ismeetingalreadyexists === false && localpersonname !== personname) {
     
   }
-  
-  if (ismeetingjoineealreadyexists === true && localpersonname === personname) {
+  else if (ismeetingjoineealreadyexists === true && localpersonname === personname) {
     alert("meeting joinee already exists");
   }
   else if (ismeetingjoineealreadyexists === true && localpersonname !== personname) {
