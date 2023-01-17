@@ -43,17 +43,17 @@ socket.onmessage = function (event) {
   if (datafromserver &&
     (datafromserver.type === "offer")
   ) {
-   // handleOffer(datafromserver.data.offer);
+    handleOffer(datafromserver);
   }
   if (datafromserver &&
     (datafromserver.type === "answer")
   ) {
-  //  handleAnswer(datafromserver.data.answer);
+    handleAnswer(datafromserver);
   }
   if (datafromserver &&
     (datafromserver.type === "candidate")
   ) {
- //   handleCandidate(datafromserver.data.candidate);
+    handleCandidate(datafromserver);
   }
 
 
@@ -564,10 +564,11 @@ async function makeCall() {
   await pc.setLocalDescription(offer);
 }
 
-async function handleOffer(offer) {
+async function handleOffer(methodprops) {
+  let {offer, meetingname, personname} = methodprops.data;
   let localmeetingname = localStorage.getItem("localmeetingname");
   let localpersonname = localStorage.getItem("localpersonname");
-
+if(localpersonname !== personname){
   if (pc) {
     console.error('existing peerconnection');
     return;
@@ -588,17 +589,28 @@ async function handleOffer(offer) {
 
  // signaling.postMessage({type: 'answer', sdp: answer.sdp});
   await pc.setLocalDescription(answer);
+    }
+  
 }
 
-async function handleAnswer(answer) {
+async function handleAnswer(methodprops) {
+  let {answer, meetingname, personname} = methodprops.data;
+  let localmeetingname = localStorage.getItem("localmeetingname");
+  let localpersonname = localStorage.getItem("localpersonname");
+if(localpersonname !== personname){
   if (!pc) {
     console.error('no peerconnection');
     return;
   }
   await pc.setRemoteDescription(answer);
 }
+}
 
-async function handleCandidate(candidate) {
+async function handleCandidate(methodprops) {
+  let {candidate, meetingname, personname} = methodprops.data;
+  let localmeetingname = localStorage.getItem("localmeetingname");
+  let localpersonname = localStorage.getItem("localpersonname");
+if(localpersonname !== personname){
   if (!pc) {
     console.error('no peerconnection');
     return;
@@ -608,6 +620,7 @@ async function handleCandidate(candidate) {
   } else {
     await pc.addIceCandidate(candidate);
   }
+}
 }
 
 
