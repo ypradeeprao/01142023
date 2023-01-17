@@ -113,6 +113,48 @@ let createMeeting = async (methodprops) => {
 
 }
 let deleteMeeting = async (methodprops) => {
+  
+  consolelog("deleteMeeting",methodprops);
+  let { meetingname, personname } = methodprops.data;
+  let meetingsdata = localStorage.getItem("meetings");
+  let meetingsdatajson = [];
+  let meetingsdatajsonU = [];
+  if (meetingsdata) {
+    meetingsdatajson = JSON.parse(meetingsdata);
+  }
+ 
+  let localpersonname = localStorage.getItem("localpersonname");
+  let ismeetingalreadyexists = false;
+  if (meetingsdatajson && meetingsdatajson.length > 0) {
+   
+    consolelog("meetingsdatajson",meetingsdatajson);
+    for (let i = 0; i < meetingsdatajson.length; i++) {
+      consolelog("meetingsdatajson[i].name",meetingsdatajson[i].name);
+      consolelog("meetingname",meetingname);
+      if (meetingsdatajson[i].name === meetingname) {
+        ismeetingalreadyexists = true;
+      }
+      else{
+        meetingsdatajsonU.push(meetingsdatajson[i]);
+      }
+    }
+
+  }
+
+  consolelog("ismeetingalreadyexists",ismeetingalreadyexists);
+  consolelog("localpersonname",localpersonname);
+  consolelog("personname",personname);
+
+  if (ismeetingalreadyexists === false && localpersonname === personname) {
+    alert("meeting not exists");
+  }
+  else if (ismeetingalreadyexists === false && localpersonname !== personname) {
+    
+  }
+  else {
+    localStorage.setItem("meetings", JSON.stringify(meetingsdatajsonU));
+  }
+
 }
 let joinMeeting = async (methodprops) => {
 }
