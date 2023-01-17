@@ -737,7 +737,7 @@ function App() {
         <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
         <div onClick={() => handleClick({ type: "showcameravideo" })} >showcameravideo</div>
-        <div onClick={() => createOffer({ type: "makeCall" })} >createOffer</div>
+        <div onClick={() => makeCall({ type: "makeCall" })} >createOffer</div>
         <div onClick={() => createAnswer({ type: "createAnswer" })} >createAnswer</div>
        
         
