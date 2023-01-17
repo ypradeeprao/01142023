@@ -14,6 +14,11 @@ socket.onopen = function(e) {
 socket.onmessage = function(event) {
   let datafromserver = JSON.parse(event.data);
   console.log(datafromserver);
+
+  localStorage.setItem(
+      "totaljson",
+      event.data
+    );
 };
 
 socket.onclose = function(event) {
