@@ -560,7 +560,30 @@ let createOffer3 = async () => {
     peerConnectionsObj[i].localStreamObj = localStreamObj;
     peerConnectionsObj[i].remoteStreamObj = remoteStreamObj;
    
-   
+    localStreamObj = await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+    remoteStreamObj = new MediaStream();
+
+    let myscreenvideo =  document.getElementById('user-1');
+    myscreenvideo.srcObject = localStreamObj;
+    myscreenvideo.play();
+  
+    let myscreen2video =  document.getElementById('user-2');
+    myscreen2video.srcObject = remoteStreamObj;
+    myscreen2video.play();
+
+  
+    localStreamObj.getTracks().forEach((track) => {
+      peerConnectionsObj[i].pc.addTrack(track, localStreamObj);
+  });
+
+
+
+  peerConnectionsObj[i].pc.ontrack = (event) => {
+      event.streams[0].getTracks().forEach((track) => {
+        remoteStreamObj.addTrack(track);
+      });
+  };
+
     }
 
     consolelog("peerConnectionsObj",peerConnectionsObj);
