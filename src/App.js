@@ -532,29 +532,59 @@ let localStream3;
 let remoteStream3;
 let localmeetingname3 = localStorage.getItem("localmeetingname");
 let localpersonname3 = localStorage.getItem("localpersonname");
+let remotepersonname = localStorage.getItem("remotepersonname");
 
+let peerConnectionsObj ={};
+
+let createOffer4 = async () => {
+  let newpeerconnectionobj = {
+  localmeetingname : localmeetingname3,
+ localpersonname : localpersonname3
+  };
+if(peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0){
+  peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
+}
+else{
+  peerConnectionsObj = {};
+  peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
+}
+ await createOffer3();
+}
 let createOffer3 = async () => {
+  
+  for(let i in peerConnectionsObj){
+    let pc = new RTCPeerConnection(servers)
+    let localStreamObj;
+    let remoteStreamObj;
+    peerConnectionsObj[i].pc = pc;
+    peerConnectionsObj[i].localStreamObj = localStreamObj;
+    peerConnectionsObj[i].remoteStreamObj = remoteStreamObj;
+   
+   
+    }
 
-
-  peerConnection3.onicecandidate = async (event) => {
+ for(let i in peerConnectionsObj){
+  let pcobj = peerConnectionsObj[i];
+  pcobj.pc.onicecandidate = async (event) => {
       //Event that fires off when a new offer ICE candidate is created
       if(event.candidate){
-          document.getElementById('offer-sdp').value = JSON.stringify(peerConnection3.localDescription)
+          document.getElementById('offer-sdp').value =  JSON.stringify(pcobj.pc.localDescription);
       
           socket.send(JSON.stringify({ 
             type: "createofferresult", 
             data: { 
-            meetingname: localmeetingname3,
-             personname: localpersonname3,
-             createofferresult:peerConnection3.localDescription
+            meetingname: pcobj.localmeetingname,
+             personname: pcobj.localpersonname,
+             createofferresult:pcobj.pc.localDescription
               }
              }));
 
       }
   };
 
-  const offer3 = await peerConnection3.createOffer();
-  await peerConnection3.setLocalDescription(offer3);
+  const offer3 = await pcobj.pc.createOffer();
+  await pcobj.pc.setLocalDescription(offer3);
+  }
 }
 
 let createAnswer3 = async (createofferresult) => {
@@ -734,7 +764,7 @@ function App() {
         <div onClick={() => handleClick({ type: "joinmeeting" })} >Join</div>
         <div onClick={() => handleClick({ type: "quitmeeting" })} >quit</div>
         <div onClick={() => handleClick({ type: "showcameravideo" })} >showcameravideo</div>
-        <div onClick={() => createOffer3({ type: "makeCall" })} >createOffer</div>
+        <div onClick={() => createOffer4({ type: "makeCall" })} >createOffer</div>
         <div onClick={() => createAnswer({ type: "createAnswer" })} >createAnswer</div>
        
         
@@ -751,7 +781,7 @@ function App() {
 
         <div class="step">
         <p><strong>Step 1:</strong> User 1,  click "Create offer" to generate SDP offer and copy offer from text area below.</p>
-        <button id="create-offer" onClick={() => createOffer3({ type: "createAnswer" })} >Create Offer</button>
+        <button id="create-offer" onClick={() => createOffer4({ type: "createAnswer" })} >Create Offer</button>
     </div>
 
     <label>SDP OFFER:</label>
