@@ -530,7 +530,8 @@ let addAnswer = async (answer) => {
 let peerConnection3 = new RTCPeerConnection(servers)
 let localStream3;
 let remoteStream3;
-
+let localmeetingname3 = localStorage.getItem("localmeetingname");
+let localpersonname3 = localStorage.getItem("localpersonname");
 
 let createOffer3 = async () => {
 
@@ -539,6 +540,16 @@ let createOffer3 = async () => {
       //Event that fires off when a new offer ICE candidate is created
       if(event.candidate){
           document.getElementById('offer-sdp').value = JSON.stringify(peerConnection3.localDescription)
+      
+          socket.send(JSON.stringify({ 
+            type: "createofferresult", 
+            data: { 
+            meetingname: localmeetingname3,
+             personname: localpersonname3,
+             createofferresult:peerConnection3.localDescription
+              }
+             }));
+
       }
   };
 
