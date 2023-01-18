@@ -631,6 +631,60 @@ if(createofferresult){
   offer3 = createofferresult;
 }
 
+let newpeerconnectionobj = {
+  localmeetingname : localmeetingname3,
+ localpersonname : localpersonname3
+  };
+if(peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0){
+  peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
+}
+else{
+  peerConnectionsObj = {};
+  peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
+}
+
+
+for(let i in peerConnectionsObj){
+  let pc = new RTCPeerConnection(servers)
+  let localStreamObj;
+  let remoteStreamObj;
+  peerConnectionsObj[i].pc = pc;
+  peerConnectionsObj[i].localStreamObj = localStreamObj;
+  peerConnectionsObj[i].remoteStreamObj = remoteStreamObj;
+ 
+  localStreamObj = await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+  remoteStreamObj = new MediaStream();
+
+  let myscreenvideo =  document.getElementById('user-1');
+  myscreenvideo.srcObject = localStreamObj;
+  myscreenvideo.play();
+
+  try{
+  let myscreen2video =  document.getElementById('user-2');
+  myscreen2video.srcObject = remoteStreamObj;
+  myscreen2video.play();
+  }
+  catch (err) {
+    console.log(err);
+  }
+
+
+  localStreamObj.getTracks().forEach((track) => {
+    peerConnectionsObj[i].pc.addTrack(track, localStreamObj);
+});
+
+
+
+peerConnectionsObj[i].pc.ontrack = (event) => {
+    event.streams[0].getTracks().forEach((track) => {
+      remoteStreamObj.addTrack(track);
+    });
+};
+
+  }
+
+  
+
 for(let i in peerConnectionsObj){
   peerConnectionsObj[i].pc.onicecandidate = async (event) => {
       //Event that fires off when a new answer ICE candidate is created
