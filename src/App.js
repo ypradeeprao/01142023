@@ -564,10 +564,13 @@ let createOffer3 = async () => {
     }
 
     consolelog("peerConnectionsObj",peerConnectionsObj);
-    
+
  for(let i in peerConnectionsObj){
   let pcobj = peerConnectionsObj[i];
+ 
   pcobj.pc.onicecandidate = async (event) => {
+    consolelog("pcobjonicecandidate",pcobj);
+    consolelog("onicecandidate",event);
       //Event that fires off when a new offer ICE candidate is created
       if(event.candidate){
           document.getElementById('offer-sdp').value =  JSON.stringify(pcobj.pc.localDescription);
@@ -583,8 +586,9 @@ let createOffer3 = async () => {
 
       }
   };
-
+  consolelog("pcobj",pcobj);
   const offer3 = await pcobj.pc.createOffer();
+  consolelog("pcobj",pcobj);
   await pcobj.pc.setLocalDescription(offer3);
   }
 }
