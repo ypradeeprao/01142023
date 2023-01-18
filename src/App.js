@@ -55,7 +55,7 @@ if(localpersonname !== personname){
   if (datafromserver &&
     (datafromserver.type === "createanswerresult")
   ) {
-   // addAnswer3(datafromserver.data.createanswerresult);
+    addAnswer3(datafromserver.data.createanswerresult);
   }
   if (datafromserver &&
     (datafromserver.type === "sendicecandidate")
@@ -594,9 +594,16 @@ if(createofferresult){
 }
 }
 
-let addAnswer3 = async () => {
+let addAnswer3 = async (createanswerresult) => {
   console.log('Add answer triggerd')
-  let answer3 = JSON.parse(document.getElementById('answer-sdp').value)
+  let answer3 = {};
+  if(document.getElementById('answer-sdp').value){
+    answer3 = JSON.parse(document.getElementById('answer-sdp').value)
+  }
+if(createanswerresult){
+  answer3 = createanswerresult;
+}
+  
   console.log('answer:', answer3)
   if (!peerConnection3.currentRemoteDescription){
       peerConnection3.setRemoteDescription(answer3);
