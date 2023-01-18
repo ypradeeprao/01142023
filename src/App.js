@@ -434,7 +434,7 @@ let createPeerConnection = async (methodprops) => {
    
   
     let remotescreenvideo =  document.getElementById('remotescreenvideo');
-    remotescreenvideo.srcObject = remoteStream;
+   // remotescreenvideo.srcObject = remoteStream;
    // remotescreenvideo.play();
 //}
 
