@@ -527,7 +527,7 @@ let addAnswer = async (answer) => {
 }
 
 
-let peerConnection3 = new RTCPeerConnection()
+let peerConnection3 = new RTCPeerConnection(servers)
 let localStream3;
 let remoteStream3;
 
@@ -553,8 +553,10 @@ function App() {
     document.getElementById('user-2').srcObject = remoteStream3
 
     localStream3.getTracks().forEach((track) => {
-        peerConnection3.addTrack(track, localStream);
+        peerConnection3.addTrack(track, localStream3);
     });
+
+ 
 
     peerConnection3.ontrack = (event) => {
         event.streams[0].getTracks().forEach((track) => {
