@@ -13,8 +13,8 @@ const servers = {
   ],
 };
 
-let localmeetingname = localStorage.getItem("localmeetingname");
-let localpersonname = localStorage.getItem("localpersonname");
+let localmeetingname = sessionStorage.getItem("localmeetingname");
+let localpersonname = sessionStorage.getItem("localpersonname");
 
 
 let peerConnectionsObj = {};
@@ -23,7 +23,7 @@ let peerConnectionsObj = {};
 
 let socketsend = function (str) {
   consolelog("socketsend", str);
-  str.data.remotepersonname = localStorage.getItem("localremotepersonname");
+  str.data.remotepersonname = sessionStorage.getItem("localremotepersonname");
   socket.send(JSON.stringify(str));
 };
 
@@ -98,7 +98,7 @@ let consolelog = (a, b) => {
 let createMeeting = async (methodprops) => {
   consolelog("createMeeting", methodprops);
   let { meetingname, personname } = methodprops.data;
-  let meetingsdata = localStorage.getItem("meetings");
+  let meetingsdata = sessionStorage.getItem("meetings");
   let meetingsdatajson = [];
   if (meetingsdata) {
     meetingsdatajson = JSON.parse(meetingsdata);
@@ -134,13 +134,13 @@ let createMeeting = async (methodprops) => {
     let newmeeting = { name: meetingname };
     meetingsdatajson.push(newmeeting);
     consolelog("meetingsdatajson", meetingsdatajson);
-    localStorage.setItem("meetings", JSON.stringify(meetingsdatajson));
+    sessionStorage.setItem("meetings", JSON.stringify(meetingsdatajson));
   }
 };
 let deleteMeeting = async (methodprops) => {
   consolelog("deleteMeeting", methodprops);
   let { meetingname, personname } = methodprops.data;
-  let meetingsdata = localStorage.getItem("meetings");
+  let meetingsdata = sessionStorage.getItem("meetings");
   let meetingsdatajson = [];
   let meetingsdatajsonU = [];
   if (meetingsdata) {
@@ -171,25 +171,25 @@ let deleteMeeting = async (methodprops) => {
     localpersonname !== personname
   ) {
   } else {
-    localStorage.setItem("meetings", JSON.stringify(meetingsdatajsonU));
+    sessionStorage.setItem("meetings", JSON.stringify(meetingsdatajsonU));
   }
 };
 let joinMeeting = async (methodprops) => {
   consolelog("joinMeeting", methodprops);
   let { meetingname, personname } = methodprops.data;
-  let meetingsdata = localStorage.getItem("meetings");
+  let meetingsdata = sessionStorage.getItem("meetings");
   let meetingsdatajson = [];
   if (meetingsdata) {
     meetingsdatajson = JSON.parse(meetingsdata);
   }
 
-  let meetingjoineesdata = localStorage.getItem("meetingjoinees");
+  let meetingjoineesdata = sessionStorage.getItem("meetingjoinees");
   let meetingjoineesdatajson = [];
   if (meetingjoineesdata) {
     meetingjoineesdatajson = JSON.parse(meetingjoineesdata);
   }
 
-  let meetingpeerconnectionsdata = localStorage.getItem(
+  let meetingpeerconnectionsdata = sessionStorage.getItem(
     "meetingpeerconnections"
   );
   let meetingpeerconnectionsdatajson = [];
@@ -265,7 +265,7 @@ let joinMeeting = async (methodprops) => {
     let newmeetingjoinee = { name: personname, meetingname: meetingname };
     meetingjoineesdatajson.push(newmeetingjoinee);
     consolelog("meetingjoineesdatajson", meetingjoineesdatajson);
-    localStorage.setItem(
+    sessionStorage.setItem(
       "meetingjoinees",
       JSON.stringify(meetingjoineesdatajson)
     );
@@ -273,7 +273,7 @@ let joinMeeting = async (methodprops) => {
       meetingpeerconnectionsdatajson &&
       meetingpeerconnectionsdatajson.length > 0
     ) {
-      localStorage.setItem(
+      sessionStorage.setItem(
         "meetingpeerconnections",
         JSON.stringify(meetingpeerconnectionsdatajson)
       );
@@ -285,20 +285,20 @@ let joinMeeting = async (methodprops) => {
 let quitMeeting = async (methodprops) => {
   consolelog("quitMeeting", methodprops);
   let { meetingname, personname } = methodprops.data;
-  let meetingsdata = localStorage.getItem("meetings");
+  let meetingsdata = sessionStorage.getItem("meetings");
   let meetingsdatajson = [];
   if (meetingsdata) {
     meetingsdatajson = JSON.parse(meetingsdata);
   }
 
-  let meetingjoineesdata = localStorage.getItem("meetingjoinees");
+  let meetingjoineesdata = sessionStorage.getItem("meetingjoinees");
   let meetingjoineesdatajson = [];
   let meetingjoineesdatajsonU = [];
   if (meetingjoineesdata) {
     meetingjoineesdatajson = JSON.parse(meetingjoineesdata);
   }
 
-  let meetingpeerconnectionsdata = localStorage.getItem(
+  let meetingpeerconnectionsdata = sessionStorage.getItem(
     "meetingpeerconnections"
   );
   let meetingpeerconnectionsdatajson = [];
@@ -384,12 +384,12 @@ let quitMeeting = async (methodprops) => {
   ) {
   } else {
     consolelog("meetingjoineesdatajsonU", meetingjoineesdatajsonU);
-    localStorage.setItem(
+    sessionStorage.setItem(
       "meetingjoinees",
       JSON.stringify(meetingjoineesdatajsonU)
     );
     if (meetingpeerconnectionsdatajsonU.length > 0) {
-      localStorage.setItem(
+      sessionStorage.setItem(
         "meetingpeerconnections",
         JSON.stringify(meetingpeerconnectionsdatajsonU)
       );
@@ -401,13 +401,13 @@ let quitMeeting = async (methodprops) => {
 let resetPeerConnections = async (methodprops) => {
   consolelog("resetPeerConnections", methodprops);
 
-  let meetingjoineesdata = localStorage.getItem("meetingjoinees");
+  let meetingjoineesdata = sessionStorage.getItem("meetingjoinees");
   let meetingjoineesdatajson = [];
   if (meetingjoineesdata) {
     meetingjoineesdatajson = JSON.parse(meetingjoineesdata);
   }
 
-  let meetingpeerconnectionsdata = localStorage.getItem(
+  let meetingpeerconnectionsdata = sessionStorage.getItem(
     "meetingpeerconnections"
   );
   let meetingpeerconnectionsdatajson = [];
@@ -423,10 +423,10 @@ let makecall = async () => {
   };
      
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
-    peerConnectionsObj[localStorage.getItem("localremotepersonname")] = newpeerconnectionobj;
+    peerConnectionsObj[sessionStorage.getItem("localremotepersonname")] = newpeerconnectionobj;
   } else {
     peerConnectionsObj = {};
-    peerConnectionsObj[localStorage.getItem("localremotepersonname")] = newpeerconnectionobj;
+    peerConnectionsObj[sessionStorage.getItem("localremotepersonname")] = newpeerconnectionobj;
   }
   await createOfferHandler();
 };
@@ -435,7 +435,7 @@ let closecall = async () => {
  
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
     for (let i in peerConnectionsObj) {
-    if(i == localStorage.getItem("localremotepersonname") && peerConnectionsObj[i].pc){
+    if(i == sessionStorage.getItem("localremotepersonname") && peerConnectionsObj[i].pc){
       await peerConnectionsObj[i].pc.close();
     }
     }
@@ -464,7 +464,7 @@ let createOfferHandler = async () => {
       myscreenvideo.muted = true;
       myscreenvideo.play();
 
-      let myscreen2video = document.getElementById("remotescreenvideo"+localStorage.getItem("localremotepersonname"));
+      let myscreen2video = document.getElementById("remotescreenvideo"+sessionStorage.getItem("localremotepersonname"));
       myscreen2video.srcObject = remoteStreamObj;
       myscreen2video.muted = true;
       myscreen2video.play();
@@ -495,7 +495,7 @@ let createOfferHandler = async () => {
       if (event.candidate) {
        
 
-        localStorage.setItem(
+        sessionStorage.setItem(
           "createofferresult",
           JSON.stringify(peerConnectionsObj[i].pc.localDescription)
         );
@@ -514,7 +514,7 @@ let createOfferHandler = async () => {
         meetingname: localmeetingname,
         personname: localpersonname,
         createofferresult: JSON.parse(
-          localStorage.getItem("createofferresult")
+          sessionStorage.getItem("createofferresult")
         ),
       },
     });
@@ -563,7 +563,7 @@ let createAnswerHandler = async (createofferresult) => {
     }
 
     try {
-      let myscreen2video = document.getElementById("remotescreenvideo"+localStorage.getItem("localremotepersonname"));
+      let myscreen2video = document.getElementById("remotescreenvideo"+sessionStorage.getItem("localremotepersonname"));
       myscreen2video.srcObject = remoteStreamObj;
       myscreen2video.muted = true;
       myscreen2video.play();
@@ -588,7 +588,7 @@ let createAnswerHandler = async (createofferresult) => {
       if (event.candidate) {
         console.log("Adding answer candidate...:", event.candidate);
         
-        localStorage.setItem(
+        sessionStorage.setItem(
           "createanswerresult",
           JSON.stringify(peerConnectionsObj[i].pc.localDescription)
         );
@@ -612,7 +612,7 @@ let createAnswerHandler = async (createofferresult) => {
         meetingname: localmeetingname,
         personname: localpersonname,
         createanswerresult: JSON.parse(
-          localStorage.getItem("createanswerresult")
+          sessionStorage.getItem("createanswerresult")
         ),
       },
     });
@@ -673,15 +673,15 @@ function App() {
     consolelog("handleChange", methodprops);
     if (type === "meetingname") {
       //   await showui({ "meetingname": value });
-      localStorage.setItem("localmeetingname", value);
+      sessionStorage.setItem("localmeetingname", value);
     }
     if (type === "personname") {
       // await showui({ "personname": value });
-      localStorage.setItem("localpersonname", value);
+      sessionStorage.setItem("localpersonname", value);
     }
     if (type === "remotepersonname") {
       // await showui({ "personname": value });
-      localStorage.setItem("localremotepersonname", value);
+      sessionStorage.setItem("localremotepersonname", value);
     }
     
   };
@@ -693,14 +693,14 @@ function App() {
    
     
     if (type === "addtocalltopersonnames") {
-      calltopersonnames.push(localStorage.getItem("localremotepersonname"));
+      calltopersonnames.push(sessionStorage.getItem("localremotepersonname"));
       await hideui({});
       await showui({ calltopersonnames: calltopersonnames });
     }
     if (type === "removefromcalltopersonnames") {
       let calltopersonnamesU = [];
       for(let i=0; i<calltopersonnames.length; i++){
-        if(calltopersonnames[i] != localStorage.getItem("localremotepersonname")){
+        if(calltopersonnames[i] != sessionStorage.getItem("localremotepersonname")){
           calltopersonnamesU.push(calltopersonnames[i]);
         }
       }
