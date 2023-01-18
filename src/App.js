@@ -606,6 +606,9 @@ let createOffer3 = async () => {
       if(event.candidate){
           document.getElementById('offer-sdp').value =  JSON.stringify(peerConnectionsObj[i].pc.localDescription);
       
+
+          setTimeout(() => {
+           
           socket.send(JSON.stringify({ 
             type: "createofferresult", 
             data: { 
@@ -614,6 +617,8 @@ let createOffer3 = async () => {
              createofferresult:peerConnectionsObj[i].pc.localDescription
               }
              }));
+          }, 1000);
+
 
       }
   };
@@ -707,7 +712,8 @@ for(let i in peerConnectionsObj){
       if(event.candidate){
           console.log('Adding answer candidate...:', event.candidate)
           document.getElementById('answer-sdp').value = JSON.stringify( peerConnectionsObj[i].pc.localDescription)
-      
+         
+          setTimeout(() => {
           socket.send(JSON.stringify({ 
             type: "createanswerresult", 
             data: { 
@@ -716,7 +722,7 @@ for(let i in peerConnectionsObj){
              createanswerresult: peerConnectionsObj[i].pc.localDescription
               }
              }));
-
+            }, 1000);
         }
   };
 
@@ -745,12 +751,13 @@ if(createanswerresult){
   console.log('answer:', answer3)
   for(let i in peerConnectionsObj){
   // (!peerConnectionsObj[i].pc.currentRemoteDescription){
-  
+    setTimeout(() => {
     try {
       peerConnectionsObj[i].pc.setRemoteDescription(answer3);
     } catch (err) {
       console.log(err);
     }
+  }, 1000);
 
     //  let myscreen2video =  document.getElementById('user-2');
    
