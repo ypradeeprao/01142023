@@ -64,7 +64,10 @@ socket.onmessage = function (event) {
     ) {
       createAnswerHandler(datafromserver.data.createofferresult);
     }
-    if (datafromserver && datafromserver.type === "createanswerresult") {
+    if (datafromserver 
+      && datafromserver.type === "createanswerresult"
+      && datafromserver.data.createanswerresult
+      ) {
       addAnswerHandler(datafromserver.data.createanswerresult);
     }
   
@@ -635,16 +638,14 @@ let addAnswerHandler = async (createanswerresult) => {
       }
     }, 1000);
 
-    //  let myscreen2video =  document.getElementById('remotescreenvideo');
-
-    // myscreen2video.play();
-    // }
+    
   }
 };
 
 function App() {
   const [compstate, setCompstate] = useState({
     showui: true,
+    calltopersonnames:[]
   });
 
   useEffect(() => {
@@ -653,18 +654,18 @@ function App() {
 
   let getData = async (methodprops) => {};
 
-  // let showui = async (methodprops) => {
-  //   let compstatejs = JSON.parse(JSON.stringify(compstate));
-  //   let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
+  let showui = async (methodprops) => {
+    let compstatejs = JSON.parse(JSON.stringify(compstate));
+    let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
 
-  //   await setCompstate({ ...compstatejs, ...methodpropsjs, showui: true });
-  // };
+    await setCompstate({ ...compstatejs, ...methodpropsjs, showui: true });
+  };
 
-  // let hideui = async (methodprops) => {
-  //   let compstatejs = JSON.parse(JSON.stringify(compstate));
-  //   let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
-  //   await setCompstate({ ...compstatejs, ...methodpropsjs, showui: false });
-  // };
+  let hideui = async (methodprops) => {
+    let compstatejs = JSON.parse(JSON.stringify(compstate));
+    let methodpropsjs = JSON.parse(JSON.stringify(methodprops));
+    await setCompstate({ ...compstatejs, ...methodpropsjs, showui: false });
+  };
 
   let handleChange = async (methodprops) => {
     let { type, value } = methodprops;
@@ -687,9 +688,27 @@ function App() {
 
   let handleClick = async (methodprops) => {
     let { type } = methodprops;
-
+  let {calltopersonnames} = compstate;
     consolelog("handleClick", methodprops);
    
+    
+    if (type === "addtocalltopersonnames") {
+      calltopersonnames.push(localremotepersonname);
+      await hideui({});
+      await showui({ calltopersonnames: calltopersonnames });
+    }
+    if (type === "removefromcalltopersonnames") {
+      let calltopersonnamesU = [];
+      for(let i=0; i<calltopersonnames.length; i++){
+        if(calltopersonnames[i] != localremotepersonname){
+          calltopersonnamesU.push(calltopersonnames[i]);
+        }
+      }
+     
+      await hideui({});
+      await showui({ calltopersonnames: calltopersonnamesU });
+    }
+    
     if (type === "createmeeting") {
       socketsend({
         type: "createmeeting",
@@ -718,6 +737,12 @@ function App() {
     }
   };
 
+  let {calltopersonnames} = compstate;
+  let calltopersonnamesHtml = [];
+  for(let i=0; i<calltopersonnames.length; i++){
+    let videoid = "remotescreenvideo"+calltopersonnames[i];
+    calltopersonnamesHtml.push(<>{calltopersonnames[i]} <video class="video-player" id={videoid} ></video></>);
+  }
   if (compstate.showui !== true) {
     return <></>;
   } else {
@@ -754,6 +779,8 @@ function App() {
           }
           defaultValue={compstate.remotepersonname}
         />
+         <div onClick={() => handleClick({ type: "addtocalltopersonnames" })}>Add to calltopersonnames</div>
+         <div onClick={() => handleClick({ type: "removefromcalltopersonnames" })}>remove from calltopersonnames</div>
         <div onClick={() => handleClick({ type: "createmeeting" })}>create</div>
         <div onClick={() => handleClick({ type: "deletemeeting" })}>delete</div>
         <div onClick={() => handleClick({ type: "joinmeeting" })}>Join</div>
@@ -763,6 +790,7 @@ function App() {
         </div>
         <video class="video-player" id="myscreenvideo"></video>
         <video class="video-player" id="remotescreenvideo"></video>
+        {calltopersonnamesHtml}
         <div class="step">
           <p>
             <strong>Step 1:</strong> User 1, click "Create offer" to generate
