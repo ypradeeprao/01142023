@@ -48,7 +48,7 @@ if(localpersonname !== personname){
   }
   if (datafromserver &&
     (datafromserver.type === "createofferresult") &&
-    datafromserver.data.offer
+    datafromserver.data.createofferresult
   ) {
     createAnswer3(datafromserver.data.createofferresult);
   }
