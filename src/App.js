@@ -464,7 +464,7 @@ let createOfferHandler = async () => {
       myscreenvideo.muted = true;
       myscreenvideo.play();
 
-      let myscreen2video = document.getElementById("remotescreenvideo");
+      let myscreen2video = document.getElementById("remotescreenvideo"+localStorage.getItem("localremotepersonname"));
       myscreen2video.srcObject = remoteStreamObj;
       myscreen2video.muted = true;
       myscreen2video.play();
@@ -563,7 +563,7 @@ let createAnswerHandler = async (createofferresult) => {
     }
 
     try {
-      let myscreen2video = document.getElementById("remotescreenvideo");
+      let myscreen2video = document.getElementById("remotescreenvideo"+localStorage.getItem("localremotepersonname"));
       myscreen2video.srcObject = remoteStreamObj;
       myscreen2video.muted = true;
       myscreen2video.play();
@@ -789,7 +789,7 @@ function App() {
           showcameravideo
         </div>
         <video class="video-player" id="myscreenvideo"></video>
-        <video class="video-player" id="remotescreenvideo"></video>
+       
         {calltopersonnamesHtml}
         <div class="step">
           <p>
