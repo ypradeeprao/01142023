@@ -587,7 +587,11 @@ if(createofferresult){
   await peerConnection3.setRemoteDescription(offer3);
 
   let answer3 = await peerConnection3.createAnswer();
+  try {
   await peerConnection3.setLocalDescription(answer3); 
+} catch (err) {
+  console.log(err);
+}
 }
 
 let addAnswer3 = async () => {
