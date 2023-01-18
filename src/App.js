@@ -666,6 +666,16 @@ for(let i in peerConnectionsObj){
     myscreenvideo.srcObject = localStreamObj;
     myscreenvideo.play();
 
+  
+  }
+  catch (err) {
+    console.log(err);
+  }
+
+  try{
+
+  
+
   let myscreen2video =  document.getElementById('user-2');
   myscreen2video.srcObject = remoteStreamObj;
   myscreen2video.play();
@@ -735,7 +745,12 @@ if(createanswerresult){
   console.log('answer:', answer3)
   for(let i in peerConnectionsObj){
   if (!peerConnectionsObj[i].pc.currentRemoteDescription){
-    peerConnectionsObj[i].pc.setRemoteDescription(answer3);
+  
+    try {
+      peerConnectionsObj[i].pc.setRemoteDescription(answer3);
+    } catch (err) {
+      console.log(err);
+    }
 
     //  let myscreen2video =  document.getElementById('user-2');
    
