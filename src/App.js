@@ -549,7 +549,11 @@ function App() {
   let getData = async (methodprops) => {
     localStream3 = await navigator.mediaDevices.getUserMedia({video:true, audio:false})
     remoteStream3 = new MediaStream()
-    document.getElementById('user-1').srcObject = localStream3
+    //document.getElementById('user-1').srcObject = localStream3
+    let myscreenvideo =  document.getElementById('user-1');
+  myscreenvideo.srcObject = localStream3;
+  myscreenvideo.play();
+
     document.getElementById('user-2').srcObject = remoteStream3
 
     localStream3.getTracks().forEach((track) => {
@@ -656,7 +660,7 @@ function App() {
       
       
 
-    <video class="video-player" id="user-1" autoplay playsinline></video>
+    <video class="video-player" id="user-1" ></video>
         <video class="video-player" id="user-2" autoplay playsinline></video>
       
        
