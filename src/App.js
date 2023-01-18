@@ -47,10 +47,10 @@ if(localpersonname !== personname){
     quitMeeting(datafromserver);
   }
   if (datafromserver &&
-    (datafromserver.type === "createoffer") &&
+    (datafromserver.type === "createofferresult") &&
     datafromserver.data.offer
   ) {
-    createAnswer(datafromserver.data.offer);
+    createAnswer3(datafromserver.data.createofferresult);
   }
   if (datafromserver &&
     (datafromserver.type === "answer")
@@ -557,16 +557,28 @@ let createOffer3 = async () => {
   await peerConnection3.setLocalDescription(offer3);
 }
 
-let createAnswer3 = async () => {
+let createAnswer3 = async (createofferresult) => {
 
   let offer3 = JSON.parse(document.getElementById('offer-sdp').value)
-
+if(createofferresult){
+  offer3 = createofferresult;
+}
   peerConnection3.onicecandidate = async (event) => {
       //Event that fires off when a new answer ICE candidate is created
       if(event.candidate){
           console.log('Adding answer candidate...:', event.candidate)
           document.getElementById('answer-sdp').value = JSON.stringify(peerConnection3.localDescription)
-      }
+      
+          // socket.send(JSON.stringify({ 
+          //   type: "createanswerresult", 
+          //   data: { 
+          //   meetingname: localmeetingname3,
+          //    personname: localpersonname3,
+          //    createanswerresult:peerConnection3.localDescription
+          //     }
+          //    }));
+
+        }
   };
 
   await peerConnection3.setRemoteDescription(offer3);
