@@ -567,9 +567,14 @@ let createOffer3 = async () => {
     myscreenvideo.srcObject = localStreamObj;
     myscreenvideo.play();
   
+    try{
     let myscreen2video =  document.getElementById('user-2');
     myscreen2video.srcObject = remoteStreamObj;
-   // myscreen2video.play();
+    myscreen2video.play();
+    }
+    catch (err) {
+      console.log(err);
+    }
 
   
     localStreamObj.getTracks().forEach((track) => {
@@ -625,31 +630,35 @@ let createAnswer3 = async (createofferresult) => {
 if(createofferresult){
   offer3 = createofferresult;
 }
-  peerConnection3.onicecandidate = async (event) => {
+
+for(let i in peerConnectionsObj){
+  peerConnectionsObj[i].pc.onicecandidate = async (event) => {
       //Event that fires off when a new answer ICE candidate is created
       if(event.candidate){
           console.log('Adding answer candidate...:', event.candidate)
-          document.getElementById('answer-sdp').value = JSON.stringify(peerConnection3.localDescription)
+          document.getElementById('answer-sdp').value = JSON.stringify( peerConnectionsObj[i].pc.localDescription)
       
           socket.send(JSON.stringify({ 
             type: "createanswerresult", 
             data: { 
             meetingname: localmeetingname3,
              personname: localpersonname3,
-             createanswerresult:peerConnection3.localDescription
+             createanswerresult: peerConnectionsObj[i].pc.localDescription
               }
              }));
 
         }
   };
 
-  await peerConnection3.setRemoteDescription(offer3);
+  await  peerConnectionsObj[i].pc.setRemoteDescription(offer3);
 
-  let answer3 = await peerConnection3.createAnswer();
+  let answer3 = await  peerConnectionsObj[i].pc.createAnswer();
   try {
-  await peerConnection3.setLocalDescription(answer3); 
+  await  peerConnectionsObj[i].pc.setLocalDescription(answer3); 
 } catch (err) {
   console.log(err);
+}
+
 }
 }
 
@@ -664,13 +673,15 @@ if(createanswerresult){
 }
   
   console.log('answer:', answer3)
-  if (!peerConnection3.currentRemoteDescription){
-      peerConnection3.setRemoteDescription(answer3);
+  for(let i in peerConnectionsObj){
+  if (!peerConnectionsObj[i].pc.currentRemoteDescription){
+    peerConnectionsObj[i].pc.setRemoteDescription(answer3);
 
       let myscreen2video =  document.getElementById('user-2');
    
     myscreen2video.play();
   }
+}
 }
 
 
