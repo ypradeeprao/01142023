@@ -527,7 +527,9 @@ let addAnswer = async (answer) => {
 }
 
 
-
+let peerConnection3 = new RTCPeerConnection()
+let localStream3;
+let remoteStream3;
 
 function App() {
   
@@ -545,17 +547,20 @@ function App() {
 
 
   let getData = async (methodprops) => {
-    const constraints = window.constraints = {
-      audio: false,
-      video: true
+    localStream3 = await navigator.mediaDevices.getUserMedia({video:true, audio:false})
+    remoteStream3 = new MediaStream()
+    document.getElementById('user-1').srcObject = localStream3
+    document.getElementById('user-2').srcObject = remoteStream3
+
+    localStream3.getTracks().forEach((track) => {
+        peerConnection3.addTrack(track, localStream);
+    });
+
+    peerConnection3.ontrack = (event) => {
+        event.streams[0].getTracks().forEach((track) => {
+        remoteStream3.addTrack(track);
+        });
     };
-     const stream = await navigator.mediaDevices.getUserMedia(constraints);
-     const video = document.querySelector('video');
-     const videoTracks = stream.getVideoTracks();
-     console.log('Got stream with constraints:', constraints);
-     console.log(`Using video device: ${videoTracks[0].label}`);
-     window.stream = stream; // make variable available to browser console
-     video.srcObject = stream;
   }
 
   // let showui = async (methodprops) => {
@@ -647,8 +652,10 @@ function App() {
         <video  id="myscreenvideo" ></video>
         <video  id="remotescreenvideo" autoplay playsinline ></video>
       
-        <video id="localVideo" playsinline autoplay muted></video>
-    <video id="remoteVideo" playsinline autoplay></video>
+      
+
+    <video class="video-player" id="user-1" autoplay playsinline></video>
+        <video class="video-player" id="user-2" autoplay playsinline></video>
       
        
        
