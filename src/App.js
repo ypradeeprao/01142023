@@ -443,6 +443,7 @@ let createPeerConnection = async (methodprops) => {
   })
 
   peerConnection.ontrack = (event) => {
+    consolelog("eventstreams",event.streams);
       event.streams[0].getTracks().forEach((track) => {
           remoteStream.addTrack(track)
       })
