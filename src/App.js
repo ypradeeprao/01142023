@@ -744,7 +744,7 @@ if(createanswerresult){
   
   console.log('answer:', answer3)
   for(let i in peerConnectionsObj){
-  if (!peerConnectionsObj[i].pc.currentRemoteDescription){
+  // (!peerConnectionsObj[i].pc.currentRemoteDescription){
   
     try {
       peerConnectionsObj[i].pc.setRemoteDescription(answer3);
@@ -755,7 +755,7 @@ if(createanswerresult){
     //  let myscreen2video =  document.getElementById('user-2');
    
    // myscreen2video.play();
-  }
+ // }
 }
 }
 
