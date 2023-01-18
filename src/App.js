@@ -554,7 +554,11 @@ function App() {
   myscreenvideo.srcObject = localStream3;
   myscreenvideo.play();
 
-    document.getElementById('user-2').srcObject = remoteStream3
+  let myscreen2video =  document.getElementById('user-2');
+  myscreen2video.srcObject = remoteStream3;
+  myscreen2video.play();
+
+    //document.getElementById('user-2').srcObject = remoteStream3
 
     localStream3.getTracks().forEach((track) => {
         peerConnection3.addTrack(track, localStream3);
@@ -661,7 +665,7 @@ function App() {
       
 
     <video class="video-player" id="user-1" ></video>
-        <video class="video-player" id="user-2" autoplay playsinline></video>
+        <video class="video-player" id="user-2" ></video>
       
        
        
