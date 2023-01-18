@@ -606,6 +606,7 @@ let createOffer3 = async () => {
       if(event.candidate){
           document.getElementById('offer-sdp').value =  JSON.stringify(peerConnectionsObj[i].pc.localDescription);
       
+          localStorage.setItem("createofferresult",  JSON.stringify(peerConnectionsObj[i].pc.localDescription));
 
           setTimeout(() => {
            
@@ -614,7 +615,7 @@ let createOffer3 = async () => {
             data: { 
             meetingname: peerConnectionsObj[i].localmeetingname,
              personname: peerConnectionsObj[i].localpersonname,
-             createofferresult:peerConnectionsObj[i].pc.localDescription
+             createofferresult:JSON.parse(localStorage.getItem("createofferresult"))
               }
              }));
           }, 1000);
@@ -712,14 +713,14 @@ for(let i in peerConnectionsObj){
       if(event.candidate){
           console.log('Adding answer candidate...:', event.candidate)
           document.getElementById('answer-sdp').value = JSON.stringify( peerConnectionsObj[i].pc.localDescription)
-         
+          localStorage.setItem("createanswerresult",  JSON.stringify(peerConnectionsObj[i].pc.localDescription));
           setTimeout(() => {
           socket.send(JSON.stringify({ 
             type: "createanswerresult", 
             data: { 
             meetingname: localmeetingname3,
              personname: localpersonname3,
-             createanswerresult: peerConnectionsObj[i].pc.localDescription
+             createanswerresult:JSON.parse(localStorage.getItem("createanswerresult"))
               }
              }));
             }, 1000);
