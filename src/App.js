@@ -608,17 +608,7 @@ let createOffer3 = async () => {
       
           localStorage.setItem("createofferresult",  JSON.stringify(peerConnectionsObj[i].pc.localDescription));
 
-          setTimeout(() => {
-           
-          socket.send(JSON.stringify({ 
-            type: "createofferresult", 
-            data: { 
-            meetingname: peerConnectionsObj[i].localmeetingname,
-             personname: peerConnectionsObj[i].localpersonname,
-             createofferresult:JSON.parse(localStorage.getItem("createofferresult"))
-              }
-             }));
-          }, 1000);
+        
 
 
       }
@@ -628,6 +618,20 @@ let createOffer3 = async () => {
   consolelog("pcobj",peerConnectionsObj[i]);
   await peerConnectionsObj[i].pc.setLocalDescription(offer3);
   }
+
+
+  setTimeout(() => {
+           
+    socket.send(JSON.stringify({ 
+      type: "createofferresult", 
+      data: { 
+      meetingname: peerConnectionsObj[i].localmeetingname,
+       personname: peerConnectionsObj[i].localpersonname,
+       createofferresult:JSON.parse(localStorage.getItem("createofferresult"))
+        }
+       }));
+    }, 3000);
+
 }
 
 let createAnswer3 = async (createofferresult) => {
@@ -714,16 +718,7 @@ for(let i in peerConnectionsObj){
           console.log('Adding answer candidate...:', event.candidate)
           document.getElementById('answer-sdp').value = JSON.stringify( peerConnectionsObj[i].pc.localDescription)
           localStorage.setItem("createanswerresult",  JSON.stringify(peerConnectionsObj[i].pc.localDescription));
-          setTimeout(() => {
-          socket.send(JSON.stringify({ 
-            type: "createanswerresult", 
-            data: { 
-            meetingname: localmeetingname3,
-             personname: localpersonname3,
-             createanswerresult:JSON.parse(localStorage.getItem("createanswerresult"))
-              }
-             }));
-            }, 1000);
+      
         }
   };
 
@@ -737,6 +732,19 @@ for(let i in peerConnectionsObj){
 }
 
 }
+
+
+setTimeout(() => {
+  socket.send(JSON.stringify({ 
+    type: "createanswerresult", 
+    data: { 
+    meetingname: localmeetingname3,
+     personname: localpersonname3,
+     createanswerresult:JSON.parse(localStorage.getItem("createanswerresult"))
+      }
+     }));
+    }, 3000);
+
 }
 
 let addAnswer3 = async (createanswerresult) => {
