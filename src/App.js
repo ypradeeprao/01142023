@@ -737,9 +737,9 @@ if(createanswerresult){
   if (!peerConnectionsObj[i].pc.currentRemoteDescription){
     peerConnectionsObj[i].pc.setRemoteDescription(answer3);
 
-      let myscreen2video =  document.getElementById('user-2');
+    //  let myscreen2video =  document.getElementById('user-2');
    
-    myscreen2video.play();
+   // myscreen2video.play();
   }
 }
 }
