@@ -3,7 +3,11 @@ import './App.css';
 import React, { useState, useEffect, useRef } from 'react';
 let socket = new WebSocket("wss://s8239.nyc1.piesocket.com/v3/1?api_key=eWE09fv3RllnW6tVNzfP85M4rCn6ckxRQfHLP4aX&notify_self=1");
 
+let socketsend = function (str) {
+consolelog("socketsend", str);
+  socket.send(JSON.stringify(str));
 
+}
 
 socket.onopen = function (e) {
   consolelog("[open] Connection established");
@@ -452,10 +456,10 @@ let createPeerConnection = async (methodprops) => {
 
   peerConnection.onicecandidate = async (event) => {
       if(event.candidate){
-        socket.send(JSON.stringify({ type: "sendicecandidate", data: { 
+        socketsend({ type: "sendicecandidate", data: { 
           meetingname: localmeetingname,
            personname: localpersonname,
-           candidate: event.candidate } }));
+           candidate: event.candidate } });
   
      //     client.sendMessageToPeer({text:JSON.stringify({'type':'candidate', 'candidate':event.candidate})}, MemberId)
       }
@@ -485,11 +489,11 @@ let createOffer = async (MemberId) => {
   let offer = await peerConnection.createOffer()
   await peerConnection.setLocalDescription(offer)
 
-  socket.send(JSON.stringify({ type: "createoffer", data: { 
+  socketsend({ type: "createoffer", data: { 
     meetingname: localmeetingname,
      personname: localpersonname,
      offer:offer
-      } }));
+      } });
 
  // client.sendMessageToPeer({text:JSON.stringify({'type':'offer', 'offer':offer})}, MemberId)
 }
@@ -507,14 +511,14 @@ let createAnswer = async (offer) => {
   let answer = await peerConnection.createAnswer()
   await peerConnection.setLocalDescription(answer)
 
-  socket.send(JSON.stringify({ 
+  socketsend({ 
     type: "answer", 
     data: { 
     meetingname: localmeetingname,
      personname: localpersonname,
      answer:answer
       }
-     }));
+     });
 
  // client.sendMessageToPeer({text:JSON.stringify({'type':'answer', 'answer':answer})}, MemberId)
 }
@@ -622,14 +626,14 @@ let createOffer3 = async () => {
 
   setTimeout(() => {
            
-    socket.send(JSON.stringify({ 
+    socketsend({ 
       type: "createofferresult", 
       data: { 
       meetingname: localmeetingname3,
        personname: localpersonname3,
        createofferresult:JSON.parse(localStorage.getItem("createofferresult"))
         }
-       }));
+       });
     }, 3000);
 
 }
@@ -735,14 +739,14 @@ for(let i in peerConnectionsObj){
 
 
 setTimeout(() => {
-  socket.send(JSON.stringify({ 
+  socketsend({ 
     type: "createanswerresult", 
     data: { 
     meetingname: localmeetingname3,
      personname: localpersonname3,
      createanswerresult:JSON.parse(localStorage.getItem("createanswerresult"))
       }
-     }));
+     });
     }, 3000);
 
 }
@@ -852,16 +856,16 @@ function App() {
     let localmeetingname = localStorage.getItem("localmeetingname");
     let localpersonname = localStorage.getItem("localpersonname");
     if (type === "createmeeting") {
-      socket.send(JSON.stringify({ type: "createmeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
+      socketsend({ type: "createmeeting", data: { meetingname: localmeetingname, personname: localpersonname } });
     }
     if (type === "deletemeeting") {
-      socket.send(JSON.stringify({ type: "deletemeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
+      socketsend({ type: "deletemeeting", data: { meetingname: localmeetingname, personname: localpersonname } });
     }
     if (type === "joinmeeting") {
-      socket.send(JSON.stringify({ type: "joinmeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
+      socketsend({ type: "joinmeeting", data: { meetingname: localmeetingname, personname: localpersonname } });
     }
     if (type === "quitmeeting") {
-      socket.send(JSON.stringify({ type: "quitmeeting", data: { meetingname: localmeetingname, personname: localpersonname } }));
+      socketsend({ type: "quitmeeting", data: { meetingname: localmeetingname, personname: localpersonname } });
     }
     if (type === "showcameravideo") {
       showLocalStreamVideo();
