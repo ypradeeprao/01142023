@@ -40,7 +40,7 @@ socket.onmessage = function (event) {
  
   consolelog("localpersonname", localpersonname);
   consolelog("personname", personname);
-  if (localpersonname !== personname && localremotepersonname == remotepersonname) {
+  if (localpersonname !== personname && localpersonname == remotepersonname) {
     consolelog("onmessageevent", event);
     consolelog("datafromserver", datafromserver);
 
@@ -426,6 +426,21 @@ let makecall = async () => {
   }
   await createOfferHandler();
 };
+
+let closecall = async () => {
+  let newpeerconnectionobj = {
+    localmeetingname: localmeetingname,
+    localpersonname: localpersonname,
+  };
+  if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
+    peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
+  } else {
+    peerConnectionsObj = {};
+    peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
+  }
+  await createOfferHandler();
+};
+
 let createOfferHandler = async () => {
   consolelog("peerConnectionsObj", peerConnectionsObj);
   for (let i in peerConnectionsObj) {
