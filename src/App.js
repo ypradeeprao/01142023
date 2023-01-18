@@ -420,7 +420,7 @@ let createPeerConnection = async (methodprops) => {
   let {localmeetingname, localpersonname} = methodprops;
   peerConnection = new RTCPeerConnection(servers)
 
-  remoteStream = new MediaStream()
+  remoteStream = new MediaStream();
  
   if(!localStream){
       localStream = await navigator.mediaDevices.getUserMedia({video:true, audio:false})
@@ -434,7 +434,7 @@ let createPeerConnection = async (methodprops) => {
    
   
     let remotescreenvideo =  document.getElementById('remotescreenvideo');
-   // remotescreenvideo.srcObject = remoteStream;
+    remotescreenvideo.srcObject = localStream;
    // remotescreenvideo.play();
 //}
 
