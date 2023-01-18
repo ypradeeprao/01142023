@@ -551,7 +551,7 @@ else{
  await createOffer3();
 }
 let createOffer3 = async () => {
-  
+  consolelog("peerConnectionsObj",peerConnectionsObj);
   for(let i in peerConnectionsObj){
     let pc = new RTCPeerConnection(servers)
     let localStreamObj;
@@ -563,6 +563,8 @@ let createOffer3 = async () => {
    
     }
 
+    consolelog("peerConnectionsObj",peerConnectionsObj);
+    
  for(let i in peerConnectionsObj){
   let pcobj = peerConnectionsObj[i];
   pcobj.pc.onicecandidate = async (event) => {
