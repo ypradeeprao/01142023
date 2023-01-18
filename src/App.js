@@ -568,28 +568,28 @@ let createOffer3 = async () => {
  for(let i in peerConnectionsObj){
   let pcobj = peerConnectionsObj[i];
  
-  pcobj.pc.onicecandidate = async (event) => {
-    consolelog("pcobjonicecandidate",pcobj);
+  peerConnectionsObj[i].pc.onicecandidate = async (event) => {
+    consolelog("pcobjonicecandidate",peerConnectionsObj[i]);
     consolelog("onicecandidate",event);
       //Event that fires off when a new offer ICE candidate is created
       if(event.candidate){
-          document.getElementById('offer-sdp').value =  JSON.stringify(pcobj.pc.localDescription);
+          document.getElementById('offer-sdp').value =  JSON.stringify(peerConnectionsObj[i].pc.localDescription);
       
           socket.send(JSON.stringify({ 
             type: "createofferresult", 
             data: { 
-            meetingname: pcobj.localmeetingname,
-             personname: pcobj.localpersonname,
-             createofferresult:pcobj.pc.localDescription
+            meetingname: peerConnectionsObj[i].localmeetingname,
+             personname: peerConnectionsObj[i].localpersonname,
+             createofferresult:peerConnectionsObj[i].pc.localDescription
               }
              }));
 
       }
   };
-  consolelog("pcobj",pcobj);
-  const offer3 = await pcobj.pc.createOffer();
-  consolelog("pcobj",pcobj);
-  await pcobj.pc.setLocalDescription(offer3);
+  consolelog("pcobj",peerConnectionsObj[i]);
+  const offer3 = await peerConnectionsObj[i].pc.createOffer();
+  consolelog("pcobj",peerConnectionsObj[i]);
+  await peerConnectionsObj[i].pc.setLocalDescription(offer3);
   }
 }
 
