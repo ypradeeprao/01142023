@@ -539,7 +539,7 @@ function App() {
   });
 
   useEffect(() => {
-   // getData();
+    getData();
 
    
   }, []);
