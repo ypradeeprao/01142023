@@ -559,7 +559,10 @@ let createOffer3 = async () => {
 
 let createAnswer3 = async (createofferresult) => {
 
-  let offer3 = JSON.parse(document.getElementById('offer-sdp').value)
+  let offer3 = {};
+  if(document.getElementById('offer-sdp').value){
+    offer3 = JSON.parse(document.getElementById('offer-sdp').value)
+  }
 if(createofferresult){
   offer3 = createofferresult;
 }
