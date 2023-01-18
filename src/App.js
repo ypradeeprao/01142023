@@ -418,27 +418,25 @@ let makecall = async () => {
     localmeetingname: localmeetingname,
     localpersonname: localpersonname,
   };
+     
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
-    peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
+    peerConnectionsObj[localremotepersonname] = newpeerconnectionobj;
   } else {
     peerConnectionsObj = {};
-    peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
+    peerConnectionsObj[localremotepersonname] = newpeerconnectionobj;
   }
   await createOfferHandler();
 };
 
 let closecall = async () => {
-  let newpeerconnectionobj = {
-    localmeetingname: localmeetingname,
-    localpersonname: localpersonname,
-  };
+ 
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
-    peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
-  } else {
-    peerConnectionsObj = {};
-    peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
-  }
-  await createOfferHandler();
+    for (let i in peerConnectionsObj) {
+    if(i == localremotepersonname && peerConnectionsObj[i].pc){
+      await peerConnectionsObj[i].pc.close();
+    }
+    }
+  } 
 };
 
 let createOfferHandler = async () => {
@@ -775,6 +773,12 @@ function App() {
             onClick={() => makecall({ type: "createAnswer" })}
           >
             Create Offer
+          </button>
+          <button
+            id="create-offer"
+            onClick={() => closecall({ type: "createAnswer" })}
+          >
+            closecall
           </button>
         </div>
        
