@@ -13,9 +13,9 @@ const servers = {
   ],
 };
 
-let localmeetingname3 = localStorage.getItem("localmeetingname");
-let localpersonname3 = localStorage.getItem("localpersonname");
-let remotepersonname = localStorage.getItem("remotepersonname");
+let localmeetingname = localStorage.getItem("localmeetingname");
+let localpersonname = localStorage.getItem("localpersonname");
+let localremotepersonname = localStorage.getItem("localremotepersonname");
 
 let peerConnectionsObj = {};
 
@@ -23,6 +23,7 @@ let peerConnectionsObj = {};
 
 let socketsend = function (str) {
   consolelog("socketsend", str);
+  str.data.remotepersonname = localremotepersonname;
   socket.send(JSON.stringify(str));
 };
 
@@ -34,12 +35,12 @@ socket.onopen = function (e) {
 
 socket.onmessage = function (event) {
   let datafromserver = JSON.parse(event.data);
-  let { answer, meetingname, personname } = datafromserver.data;
-  let localmeetingname = localStorage.getItem("localmeetingname");
-  let localpersonname = localStorage.getItem("localpersonname");
+  let { answer, meetingname, personname, remotepersonname } = datafromserver.data;
+ 
+ 
   consolelog("localpersonname", localpersonname);
   consolelog("personname", personname);
-  if (localpersonname !== personname) {
+  if (localpersonname !== personname && localremotepersonname == remotepersonname) {
     consolelog("onmessageevent", event);
     consolelog("datafromserver", datafromserver);
 
@@ -100,7 +101,7 @@ let createMeeting = async (methodprops) => {
     meetingsdatajson = JSON.parse(meetingsdata);
   }
 
-  let localpersonname = localStorage.getItem("localpersonname");
+  
   let ismeetingalreadyexists = false;
   if (meetingsdatajson && meetingsdatajson.length > 0) {
     consolelog("meetingsdatajson", meetingsdatajson);
@@ -113,9 +114,8 @@ let createMeeting = async (methodprops) => {
     }
   }
 
-  consolelog("ismeetingalreadyexists", ismeetingalreadyexists);
-  consolelog("localpersonname", localpersonname);
-  consolelog("personname", personname);
+
+
 
   if (ismeetingalreadyexists === true && localpersonname === personname) {
     alert("meeting already exists");
@@ -144,7 +144,7 @@ let deleteMeeting = async (methodprops) => {
     meetingsdatajson = JSON.parse(meetingsdata);
   }
 
-  let localpersonname = localStorage.getItem("localpersonname");
+
   let ismeetingalreadyexists = false;
   if (meetingsdatajson && meetingsdatajson.length > 0) {
     consolelog("meetingsdatajson", meetingsdatajson);
@@ -159,9 +159,7 @@ let deleteMeeting = async (methodprops) => {
     }
   }
 
-  consolelog("ismeetingalreadyexists", ismeetingalreadyexists);
-  consolelog("localpersonname", localpersonname);
-  consolelog("personname", personname);
+
 
   if (ismeetingalreadyexists === false && localpersonname === personname) {
     alert("meeting not exists");
@@ -196,7 +194,7 @@ let joinMeeting = async (methodprops) => {
     meetingpeerconnectionsdatajson = JSON.parse(meetingpeerconnectionsdata);
   }
 
-  let localpersonname = localStorage.getItem("localpersonname");
+
   let ismeetingalreadyexists = false;
   let ismeetingjoineealreadyexists = false;
   if (meetingsdatajson && meetingsdatajson.length > 0) {
@@ -239,9 +237,7 @@ let joinMeeting = async (methodprops) => {
     }
   }
 
-  consolelog("ismeetingalreadyexists", ismeetingalreadyexists);
-  consolelog("localpersonname", localpersonname);
-  consolelog("personname", personname);
+  
 
   if (ismeetingalreadyexists === false && localpersonname === personname) {
     alert("meeting not exists");
@@ -308,7 +304,7 @@ let quitMeeting = async (methodprops) => {
     meetingpeerconnectionsdatajson = JSON.parse(meetingpeerconnectionsdata);
   }
 
-  let localpersonname = localStorage.getItem("localpersonname");
+
   let ismeetingalreadyexists = false;
   let ismeetingjoineealreadyexists = false;
   if (meetingsdatajson && meetingsdatajson.length > 0) {
@@ -366,9 +362,7 @@ let quitMeeting = async (methodprops) => {
     }
   }
 
-  consolelog("ismeetingalreadyexists", ismeetingalreadyexists);
-  consolelog("localpersonname", localpersonname);
-  consolelog("personname", personname);
+
 
   if (ismeetingalreadyexists === false && localpersonname === personname) {
     alert("meeting not exists");
@@ -421,8 +415,8 @@ let resetPeerConnections = async (methodprops) => {
 
 let makecall = async () => {
   let newpeerconnectionobj = {
-    localmeetingname: localmeetingname3,
-    localpersonname: localpersonname3,
+    localmeetingname: localmeetingname,
+    localpersonname: localpersonname,
   };
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
     peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
@@ -499,8 +493,8 @@ let createOfferHandler = async () => {
     socketsend({
       type: "createofferresult",
       data: {
-        meetingname: localmeetingname3,
-        personname: localpersonname3,
+        meetingname: localmeetingname,
+        personname: localpersonname,
         createofferresult: JSON.parse(
           localStorage.getItem("createofferresult")
         ),
@@ -517,8 +511,8 @@ let createAnswerHandler = async (createofferresult) => {
   }
 
   let newpeerconnectionobj = {
-    localmeetingname: localmeetingname3,
-    localpersonname: localpersonname3,
+    localmeetingname: localmeetingname,
+    localpersonname: localpersonname,
   };
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
     peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
@@ -595,8 +589,8 @@ let createAnswerHandler = async (createofferresult) => {
     socketsend({
       type: "createanswerresult",
       data: {
-        meetingname: localmeetingname3,
-        personname: localpersonname3,
+        meetingname: localmeetingname,
+        personname: localpersonname,
         createanswerresult: JSON.parse(
           localStorage.getItem("createanswerresult")
         ),
@@ -667,14 +661,18 @@ function App() {
       // await showui({ "personname": value });
       localStorage.setItem("localpersonname", value);
     }
+    if (type === "remotepersonname") {
+      // await showui({ "personname": value });
+      localStorage.setItem("localremotepersonname", value);
+    }
+    
   };
 
   let handleClick = async (methodprops) => {
     let { type } = methodprops;
 
     consolelog("handleClick", methodprops);
-    let localmeetingname = localStorage.getItem("localmeetingname");
-    let localpersonname = localStorage.getItem("localpersonname");
+   
     if (type === "createmeeting") {
       socketsend({
         type: "createmeeting",
@@ -727,6 +725,17 @@ function App() {
             })
           }
           defaultValue={compstate.personname}
+        />
+
+     remotepersonname
+        <input
+          onChange={(e) =>
+            handleChange({
+              type: "remotepersonname",
+              value: e.target.value,
+            })
+          }
+          defaultValue={compstate.remotepersonname}
         />
         <div onClick={() => handleClick({ type: "createmeeting" })}>create</div>
         <div onClick={() => handleClick({ type: "deletemeeting" })}>delete</div>
