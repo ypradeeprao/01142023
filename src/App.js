@@ -53,9 +53,9 @@ if(localpersonname !== personname){
     createAnswer3(datafromserver.data.createofferresult);
   }
   if (datafromserver &&
-    (datafromserver.type === "answer")
+    (datafromserver.type === "createanswerresult")
   ) {
-    addAnswer(datafromserver.data.answer);
+   // addAnswer3(datafromserver.data.createanswerresult);
   }
   if (datafromserver &&
     (datafromserver.type === "sendicecandidate")
@@ -572,14 +572,14 @@ if(createofferresult){
           console.log('Adding answer candidate...:', event.candidate)
           document.getElementById('answer-sdp').value = JSON.stringify(peerConnection3.localDescription)
       
-          // socket.send(JSON.stringify({ 
-          //   type: "createanswerresult", 
-          //   data: { 
-          //   meetingname: localmeetingname3,
-          //    personname: localpersonname3,
-          //    createanswerresult:peerConnection3.localDescription
-          //     }
-          //    }));
+          socket.send(JSON.stringify({ 
+            type: "createanswerresult", 
+            data: { 
+            meetingname: localmeetingname3,
+             personname: localpersonname3,
+             createanswerresult:peerConnection3.localDescription
+              }
+             }));
 
         }
   };
