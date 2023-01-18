@@ -570,7 +570,7 @@ let createOffer3 = async () => {
       let myscreenvideo =  document.getElementById('user-1');
       myscreenvideo.srcObject = localStreamObj;
       myscreenvideo.play();
-      
+
     let myscreen2video =  document.getElementById('user-2');
     myscreen2video.srcObject = remoteStreamObj;
     myscreen2video.play();
@@ -753,7 +753,7 @@ function App() {
   });
 
   useEffect(() => {
-    getData();
+   // getData();
 
    
   }, []);
