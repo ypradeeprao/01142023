@@ -15,7 +15,7 @@ const servers = {
 
 let localmeetingname = localStorage.getItem("localmeetingname");
 let localpersonname = localStorage.getItem("localpersonname");
-let localremotepersonname = localStorage.getItem("localremotepersonname");
+
 
 let peerConnectionsObj = {};
 
@@ -23,7 +23,7 @@ let peerConnectionsObj = {};
 
 let socketsend = function (str) {
   consolelog("socketsend", str);
-  str.data.remotepersonname = localremotepersonname;
+  str.data.remotepersonname = localStorage.getItem("localremotepersonname");
   socket.send(JSON.stringify(str));
 };
 
@@ -423,10 +423,10 @@ let makecall = async () => {
   };
      
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
-    peerConnectionsObj[localremotepersonname] = newpeerconnectionobj;
+    peerConnectionsObj[localStorage.getItem("localremotepersonname")] = newpeerconnectionobj;
   } else {
     peerConnectionsObj = {};
-    peerConnectionsObj[localremotepersonname] = newpeerconnectionobj;
+    peerConnectionsObj[localStorage.getItem("localremotepersonname")] = newpeerconnectionobj;
   }
   await createOfferHandler();
 };
@@ -435,7 +435,7 @@ let closecall = async () => {
  
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
     for (let i in peerConnectionsObj) {
-    if(i == localremotepersonname && peerConnectionsObj[i].pc){
+    if(i == localStorage.getItem("localremotepersonname") && peerConnectionsObj[i].pc){
       await peerConnectionsObj[i].pc.close();
     }
     }
@@ -693,14 +693,14 @@ function App() {
    
     
     if (type === "addtocalltopersonnames") {
-      calltopersonnames.push(localremotepersonname);
+      calltopersonnames.push(localStorage.getItem("localremotepersonname"));
       await hideui({});
       await showui({ calltopersonnames: calltopersonnames });
     }
     if (type === "removefromcalltopersonnames") {
       let calltopersonnamesU = [];
       for(let i=0; i<calltopersonnames.length; i++){
-        if(calltopersonnames[i] != localremotepersonname){
+        if(calltopersonnames[i] != localStorage.getItem("localremotepersonname")){
           calltopersonnamesU.push(calltopersonnames[i]);
         }
       }
