@@ -569,7 +569,7 @@ let createOffer3 = async () => {
   
     let myscreen2video =  document.getElementById('user-2');
     myscreen2video.srcObject = remoteStreamObj;
-    myscreen2video.play();
+   // myscreen2video.play();
 
   
     localStreamObj.getTracks().forEach((track) => {
@@ -666,6 +666,10 @@ if(createanswerresult){
   console.log('answer:', answer3)
   if (!peerConnection3.currentRemoteDescription){
       peerConnection3.setRemoteDescription(answer3);
+
+      let myscreen2video =  document.getElementById('user-2');
+   
+    myscreen2video.play();
   }
 }
 
