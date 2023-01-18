@@ -741,7 +741,7 @@ function App() {
   let calltopersonnamesHtml = [];
   for(let i=0; i<calltopersonnames.length; i++){
     let videoid = "remotescreenvideo"+calltopersonnames[i];
-    calltopersonnamesHtml.push(<>{calltopersonnames[i]} <video class="video-player" id={videoid} ></video></>);
+    calltopersonnamesHtml.push(<div><div>{calltopersonnames[i]}</div> <video class="video-player" id={videoid} ></video></div>);
   }
   if (compstate.showui !== true) {
     return <></>;
