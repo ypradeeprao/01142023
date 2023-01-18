@@ -460,10 +460,12 @@ let createOfferHandler = async () => {
     try {
       let myscreenvideo = document.getElementById("myscreenvideo");
       myscreenvideo.srcObject = localStreamObj;
+      myscreenvideo.muted = true;
       myscreenvideo.play();
 
       let myscreen2video = document.getElementById("remotescreenvideo");
       myscreen2video.srcObject = remoteStreamObj;
+      myscreen2video.muted = true;
       myscreen2video.play();
     } catch (err) {
       console.log(err);
@@ -553,6 +555,7 @@ let createAnswerHandler = async (createofferresult) => {
     try {
       let myscreenvideo = document.getElementById("myscreenvideo");
       myscreenvideo.srcObject = localStreamObj;
+      myscreenvideo.muted = true;
       myscreenvideo.play();
     } catch (err) {
       console.log(err);
@@ -561,6 +564,7 @@ let createAnswerHandler = async (createofferresult) => {
     try {
       let myscreen2video = document.getElementById("remotescreenvideo");
       myscreen2video.srcObject = remoteStreamObj;
+      myscreen2video.muted = true;
       myscreen2video.play();
     } catch (err) {
       console.log(err);
