@@ -625,8 +625,8 @@ let createOffer3 = async () => {
     socket.send(JSON.stringify({ 
       type: "createofferresult", 
       data: { 
-      meetingname: peerConnectionsObj[i].localmeetingname,
-       personname: peerConnectionsObj[i].localpersonname,
+      meetingname: localmeetingname3,
+       personname: localpersonname3,
        createofferresult:JSON.parse(localStorage.getItem("createofferresult"))
         }
        }));
