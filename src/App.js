@@ -17,7 +17,7 @@ let localmeetingname = sessionStorage.getItem("localmeetingname");
 let localpersonname = sessionStorage.getItem("localpersonname");
 
 
-let peerConnectionsObj = {};
+let peerConnectionsArray = [];
 
 
 
@@ -416,6 +416,17 @@ let resetPeerConnections = async (methodprops) => {
   }
 };
 
+let closecall = async (remotepersonname) => {
+ 
+  if (peerConnectionsArray && peerConnectionsArray.length > 0) {
+    for (let i =0;i<peerConnectionsArray.length;i++) {
+    if(peerConnectionsArray[i].remotepersonname == remotepersonname && peerConnectionsArray[i].pc){
+      await peerConnectionsArray[i].pc.close();
+    }
+    }
+  } 
+};
+
 let makecall = async (remotepersonname) => {
   let newpeerconnectionobj = {
     localmeetingname: localmeetingname,
@@ -423,36 +434,28 @@ let makecall = async (remotepersonname) => {
     remotepersonname:remotepersonname
   };
      
-  if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
-    peerConnectionsObj[remotepersonname] = newpeerconnectionobj;
+  if (peerConnectionsArray && peerConnectionsArray.length > 0) {
+    peerConnectionsArray.push(newpeerconnectionobj);
   } else {
-    peerConnectionsObj = {};
-    peerConnectionsObj[remotepersonname] = newpeerconnectionobj;
+    peerConnectionsArray = [];
+    peerConnectionsArray.push(newpeerconnectionobj);
   }
   await createOfferHandler(remotepersonname);
 };
 
-let closecall = async (remotepersonname) => {
- 
-  if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
-    for (let i in peerConnectionsObj) {
-    if(i == remotepersonname && peerConnectionsObj[i].pc){
-      await peerConnectionsObj[i].pc.close();
-    }
-    }
-  } 
-};
+
 
 let createOfferHandler = async (remotepersonname) => {
-  consolelog("peerConnectionsObj", peerConnectionsObj);
-  for (let i in peerConnectionsObj) {
-    if(i == remotepersonname){
+  consolelog("peerConnectionsArray", peerConnectionsArray);
+ 
+    for (let i =0;i<peerConnectionsArray.length;i++) {
+    if(peerConnectionsArray[i].remotepersonname == remotepersonname){
     let pc = new RTCPeerConnection(servers);
     let localStreamObj;
     let remoteStreamObj;
-    peerConnectionsObj[i].pc = pc;
-    peerConnectionsObj[i].localStreamObj = localStreamObj;
-    peerConnectionsObj[i].remoteStreamObj = remoteStreamObj;
+    peerConnectionsArray[i].pc = pc;
+    peerConnectionsArray[i].localStreamObj = localStreamObj;
+    peerConnectionsArray[i].remoteStreamObj = remoteStreamObj;
 
     localStreamObj = await navigator.mediaDevices.getUserMedia({
       video: true,
@@ -475,10 +478,10 @@ let createOfferHandler = async (remotepersonname) => {
     }
 
     localStreamObj.getTracks().forEach((track) => {
-      peerConnectionsObj[i].pc.addTrack(track, localStreamObj);
+      peerConnectionsArray[i].pc.addTrack(track, localStreamObj);
     });
 
-    peerConnectionsObj[i].pc.ontrack = (event) => {
+    peerConnectionsArray[i].pc.ontrack = (event) => {
       event.streams[0].getTracks().forEach((track) => {
         remoteStreamObj.addTrack(track);
       });
@@ -486,14 +489,14 @@ let createOfferHandler = async (remotepersonname) => {
   }
   }
 
-  consolelog("peerConnectionsObj", peerConnectionsObj);
+  consolelog("peerConnectionsArray", peerConnectionsArray);
 
-  for (let i in peerConnectionsObj) {
-    if(i == remotepersonname){
-    let pcobj = peerConnectionsObj[i];
+  for (let i =0;i<peerConnectionsArray.length;i++) {
+    if(peerConnectionsArray[i].remotepersonname == remotepersonname){
+    let pcobj = peerConnectionsArray[i];
 
-    peerConnectionsObj[i].pc.onicecandidate = async (event) => {
-      consolelog("pcobjonicecandidate", peerConnectionsObj[i]);
+    peerConnectionsArray[i].pc.onicecandidate = async (event) => {
+      consolelog("pcobjonicecandidate", peerConnectionsArray[i]);
       consolelog("onicecandidate", event);
       //Event that fires off when a new offer ICE candidate is created
       if (event.candidate) {
@@ -501,14 +504,14 @@ let createOfferHandler = async (remotepersonname) => {
 
         sessionStorage.setItem(
           "createofferresult"+remotepersonname,
-          JSON.stringify(peerConnectionsObj[i].pc.localDescription)
+          JSON.stringify(peerConnectionsArray[i].pc.localDescription)
         );
       }
     };
-    consolelog("pcobj", peerConnectionsObj[i]);
-    const offer3 = await peerConnectionsObj[i].pc.createOffer();
-    consolelog("pcobj", peerConnectionsObj[i]);
-    await peerConnectionsObj[i].pc.setLocalDescription(offer3);
+    consolelog("pcobj", peerConnectionsArray[i]);
+    const offer3 = await peerConnectionsArray[i].pc.createOffer();
+    consolelog("pcobj", peerConnectionsArray[i]);
+    await peerConnectionsArray[i].pc.setLocalDescription(offer3);
   }
 }
 
@@ -537,22 +540,25 @@ let createAnswerHandler = async (remotepersonname, createofferresult) => {
   let newpeerconnectionobj = {
     localmeetingname: localmeetingname,
     localpersonname: localpersonname,
+    remotepersonname:remotepersonname
   };
-  if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
-    peerConnectionsObj[remotepersonname] = newpeerconnectionobj;
+
+
+  if (peerConnectionsArray && peerConnectionsArray.length > 0) {
+    peerConnectionsArray.push(newpeerconnectionobj);
   } else {
-    peerConnectionsObj = {};
-    peerConnectionsObj[remotepersonname] = newpeerconnectionobj;
+    peerConnectionsArray = [];
+    peerConnectionsArray.push(newpeerconnectionobj);
   }
 
-  for (let i in peerConnectionsObj) {
-    if(i == remotepersonname){
+  for (let i =0;i<peerConnectionsArray.length;i++) {
+    if(peerConnectionsArray[i].remotepersonname == remotepersonname){
     let pc = new RTCPeerConnection(servers);
     let localStreamObj;
     let remoteStreamObj;
-    peerConnectionsObj[i].pc = pc;
-    peerConnectionsObj[i].localStreamObj = localStreamObj;
-    peerConnectionsObj[i].remoteStreamObj = remoteStreamObj;
+    peerConnectionsArray[i].pc = pc;
+    peerConnectionsArray[i].localStreamObj = localStreamObj;
+    peerConnectionsArray[i].remoteStreamObj = remoteStreamObj;
 
     localStreamObj = await navigator.mediaDevices.getUserMedia({
       video: true,
@@ -579,10 +585,10 @@ let createAnswerHandler = async (remotepersonname, createofferresult) => {
     }
 
     localStreamObj.getTracks().forEach((track) => {
-      peerConnectionsObj[i].pc.addTrack(track, localStreamObj);
+      peerConnectionsArray[i].pc.addTrack(track, localStreamObj);
     });
 
-    peerConnectionsObj[i].pc.ontrack = (event) => {
+    peerConnectionsArray[i].pc.ontrack = (event) => {
       event.streams[0].getTracks().forEach((track) => {
         remoteStreamObj.addTrack(track);
       });
@@ -591,25 +597,25 @@ let createAnswerHandler = async (remotepersonname, createofferresult) => {
 }
 
 
-  for (let i in peerConnectionsObj) {
-    if(i == remotepersonname){
-    peerConnectionsObj[i].pc.onicecandidate = async (event) => {
+for (let i =0;i<peerConnectionsArray.length;i++) {
+  if(peerConnectionsArray[i].remotepersonname == remotepersonname){
+    peerConnectionsArray[i].pc.onicecandidate = async (event) => {
       //Event that fires off when a new answer ICE candidate is created
       if (event.candidate) {
         console.log("Adding answer candidate...:", event.candidate);
         
         sessionStorage.setItem(
           "createanswerresult"+remotepersonname,
-          JSON.stringify(peerConnectionsObj[i].pc.localDescription)
+          JSON.stringify(peerConnectionsArray[i].pc.localDescription)
         );
       }
     };
 
-    await peerConnectionsObj[i].pc.setRemoteDescription(offer3);
+    await peerConnectionsArray[i].pc.setRemoteDescription(offer3);
 
-    let answer3 = await peerConnectionsObj[i].pc.createAnswer();
+    let answer3 = await peerConnectionsArray[i].pc.createAnswer();
     try {
-      await peerConnectionsObj[i].pc.setLocalDescription(answer3);
+      await peerConnectionsArray[i].pc.setLocalDescription(answer3);
     } catch (err) {
       console.log(err);
     }
@@ -640,12 +646,12 @@ let addAnswerHandler = async (remotepersonname, createanswerresult) => {
   }
 
   console.log("answer:", answer3);
-  for (let i in peerConnectionsObj) {
-    if(i == remotepersonname){
-    // (!peerConnectionsObj[i].pc.currentRemoteDescription){
+  for (let i =0;i<peerConnectionsArray.length;i++) {
+    if(peerConnectionsArray[i].remotepersonname == remotepersonname){
+    // (!peerConnectionsArray[i].pc.currentRemoteDescription){
     setTimeout(() => {
       try {
-        peerConnectionsObj[i].pc.setRemoteDescription(answer3);
+        peerConnectionsArray[i].pc.setRemoteDescription(answer3);
       } catch (err) {
         console.log(err);
       }
