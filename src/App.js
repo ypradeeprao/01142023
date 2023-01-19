@@ -720,7 +720,7 @@ function App() {
   let {calltopersonnames, remotepersonname} = compstate;
     consolelog("handleClick", methodprops);
    
-    
+   
     if (type === "addtocalltopersonnames") {
       calltopersonnames.push(remotepersonname);
       await hideui({});
@@ -770,7 +770,20 @@ function App() {
   let calltopersonnamesHtml = [];
   for(let i=0; i<calltopersonnames.length; i++){
     let videoid = "remotescreenvideo"+calltopersonnames[i];
-    calltopersonnamesHtml.push(<div><div>{calltopersonnames[i]}</div> <video class="video-player" id={videoid} ></video></div>);
+    calltopersonnamesHtml.push(<div>
+       <button
+            id="create-offer"
+            onClick={() => makecall({  remotepersonname:calltopersonnames[i] })}
+          >
+            makecall
+          </button>
+          <button
+            id="closecall"
+            onClick={() => closecall({  remotepersonname:calltopersonnames[i] })}
+          >
+            closecall
+          </button>
+      <div>{calltopersonnames[i]}</div> <video class="video-player" id={videoid} style={{width:"200px"}} ></video></div>);
   }
   if (compstate.showui !== true) {
     return <></>;
@@ -817,7 +830,7 @@ function App() {
         <div onClick={() => handleClick({ type: "showcameravideo" })}>
           showcameravideo
         </div>
-        <video class="video-player" id="myscreenvideo"></video>
+        <video class="video-player" id="myscreenvideo" style={{width:"200px"}}></video>
        
         {calltopersonnamesHtml}
         <div class="step">
@@ -825,18 +838,7 @@ function App() {
             <strong>Step 1:</strong> User 1, click "Create offer" to generate
             SDP offer and copy offer from text area below.
           </p>
-          <button
-            id="create-offer"
-            onClick={() => makecall({ type: "createAnswer", remotepersonname:remotepersonname })}
-          >
-            Create Offer
-          </button>
-          <button
-            id="create-offer"
-            onClick={() => closecall({ remotepersonname:remotepersonname  })}
-          >
-            closecall
-          </button>
+        
         </div>
        
        
