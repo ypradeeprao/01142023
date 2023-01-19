@@ -13,8 +13,7 @@ const servers = {
   ],
 };
 
-let localmeetingname = sessionStorage.getItem("localmeetingname");
-let localpersonname = sessionStorage.getItem("localpersonname");
+
 
 
 let peerConnectionsArray = [];
@@ -38,9 +37,9 @@ socket.onmessage = function (event) {
   let { answer, meetingname, personname, remotepersonname } = datafromserver.data;
  
  
-  consolelog("localpersonname", localpersonname);
+  consolelog("localpersonname", sessionStorage.getItem("localpersonname"));
   consolelog("personname", personname);
-  if (localpersonname !== personname && localpersonname == remotepersonname) {
+  if (sessionStorage.getItem("localpersonname") !== personname && sessionStorage.getItem("localpersonname") == remotepersonname) {
     consolelog("onmessageevent", event);
     consolelog("datafromserver", datafromserver);
 
@@ -120,11 +119,11 @@ let createMeeting = async (methodprops) => {
 
 
 
-  if (ismeetingalreadyexists === true && localpersonname === personname) {
+  if (ismeetingalreadyexists === true && sessionStorage.getItem("localpersonname") === personname) {
     alert("meeting already exists");
   } else if (
     ismeetingalreadyexists === true &&
-    localpersonname !== personname
+    sessionStorage.getItem("localpersonname") !== personname
   ) {
   } else {
     if (meetingsdatajson && meetingsdatajson.length > 0) {
@@ -164,11 +163,11 @@ let deleteMeeting = async (methodprops) => {
 
 
 
-  if (ismeetingalreadyexists === false && localpersonname === personname) {
+  if (ismeetingalreadyexists === false && sessionStorage.getItem("localpersonname") === personname) {
     alert("meeting not exists");
   } else if (
     ismeetingalreadyexists === false &&
-    localpersonname !== personname
+    sessionStorage.getItem("localpersonname") !== personname
   ) {
   } else {
     sessionStorage.setItem("meetings", JSON.stringify(meetingsdatajsonU));
@@ -242,20 +241,20 @@ let joinMeeting = async (methodprops) => {
 
   
 
-  if (ismeetingalreadyexists === false && localpersonname === personname) {
+  if (ismeetingalreadyexists === false && sessionStorage.getItem("localpersonname") === personname) {
     alert("meeting not exists");
   } else if (
     ismeetingalreadyexists === false &&
-    localpersonname !== personname
+    sessionStorage.getItem("localpersonname") !== personname
   ) {
   } else if (
     ismeetingjoineealreadyexists === true &&
-    localpersonname === personname
+    sessionStorage.getItem("localpersonname") === personname
   ) {
     alert("meeting joinee already exists");
   } else if (
     ismeetingjoineealreadyexists === true &&
-    localpersonname !== personname
+    sessionStorage.getItem("localpersonname") !== personname
   ) {
   } else {
     if (meetingjoineesdatajson && meetingjoineesdatajson.length > 0) {
@@ -367,20 +366,20 @@ let quitMeeting = async (methodprops) => {
 
 
 
-  if (ismeetingalreadyexists === false && localpersonname === personname) {
+  if (ismeetingalreadyexists === false && sessionStorage.getItem("localpersonname") === personname) {
     alert("meeting not exists");
   } else if (
     ismeetingalreadyexists === false &&
-    localpersonname !== personname
+    sessionStorage.getItem("localpersonname") !== personname
   ) {
   } else if (
     ismeetingjoineealreadyexists === false &&
-    localpersonname === personname
+    sessionStorage.getItem("localpersonname") === personname
   ) {
     alert("meeting joinee not exists");
   } else if (
     ismeetingjoineealreadyexists === false &&
-    localpersonname !== personname
+    sessionStorage.getItem("localpersonname") !== personname
   ) {
   } else {
     consolelog("meetingjoineesdatajsonU", meetingjoineesdatajsonU);
@@ -434,8 +433,8 @@ let makecall = async (methodprops) => {
   
   let {remotepersonname} = methodprops;
   let newpeerconnectionobj = {
-    localmeetingname: localmeetingname,
-    localpersonname: localpersonname,
+    localmeetingname: sessionStorage.getItem("localmeetingname"),
+    localpersonname: sessionStorage.getItem("localpersonname"),
     remotepersonname:remotepersonname
   };
      
@@ -526,8 +525,8 @@ let createOfferHandler = async (methodprops) => {
     socketsend({
       type: "createofferresult",
       data: {
-        meetingname: localmeetingname,
-        personname: localpersonname,
+        meetingname: sessionStorage.getItem("localmeetingname"),
+        personname: sessionStorage.getItem("localpersonname"),
         remotepersonname:remotepersonname,
         createofferresult: JSON.parse(
           sessionStorage.getItem("createofferresult"+remotepersonname)
@@ -547,8 +546,8 @@ let createAnswerHandler = async (methodprops) => {
   }
 
   let newpeerconnectionobj = {
-    localmeetingname: localmeetingname,
-    localpersonname: localpersonname,
+    localmeetingname: sessionStorage.getItem("localmeetingname"),
+    localpersonname: sessionStorage.getItem("localpersonname"),
     remotepersonname:remotepersonname
   };
 
@@ -635,8 +634,8 @@ for (let i =0;i<peerConnectionsArray.length;i++) {
     socketsend({
       type: "createanswerresult",
       data: {
-        meetingname: localmeetingname,
-        personname: localpersonname,
+        meetingname: sessionStorage.getItem("localmeetingname"),
+        personname: sessionStorage.getItem("localpersonname"),
         remotepersonname:remotepersonname,
         createanswerresult: JSON.parse(
           sessionStorage.getItem("createanswerresult"+remotepersonname)
@@ -742,25 +741,25 @@ function App() {
     if (type === "createmeeting") {
       socketsend({
         type: "createmeeting",
-        data: { meetingname: localmeetingname, personname: localpersonname },
+        data: { meetingname: sessionStorage.getItem("localmeetingname"), personname: sessionStorage.getItem("localpersonname") },
       });
     }
     if (type === "deletemeeting") {
       socketsend({
         type: "deletemeeting",
-        data: { meetingname: localmeetingname, personname: localpersonname },
+        data: { meetingname: sessionStorage.getItem("localmeetingname"), personname: sessionStorage.getItem("localpersonname") },
       });
     }
     if (type === "joinmeeting") {
       socketsend({
         type: "joinmeeting",
-        data: { meetingname: localmeetingname, personname: localpersonname },
+        data: { meetingname: sessionStorage.getItem("localmeetingname"), personname: sessionStorage.getItem("localpersonname") },
       });
     }
     if (type === "quitmeeting") {
       socketsend({
         type: "quitmeeting",
-        data: { meetingname: localmeetingname, personname: localpersonname },
+        data: { meetingname: sessionStorage.getItem("localmeetingname"), personname: sessionStorage.getItem("localpersonname") },
       });
     }
     if (type === "showcameravideo") {
