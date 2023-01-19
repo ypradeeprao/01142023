@@ -723,8 +723,30 @@ function App() {
    
     if (type === "addtocalltopersonnames") {
       calltopersonnames.push(remotepersonname);
-      await hideui({});
+     // await hideui({});
       await showui({ calltopersonnames: calltopersonnames });
+      for (let i =0;i<peerConnectionsArray.length;i++) {
+        
+
+          try {
+            let myscreenvideo = document.getElementById("myscreenvideo");
+            myscreenvideo.srcObject = peerConnectionsArray[i].localStreamObj;
+            myscreenvideo.muted = true;
+            myscreenvideo.play();
+          } catch (err) {
+            console.log(err);
+          }
+      
+          try {
+            let myscreen2video = document.getElementById("remotescreenvideo"+peerConnectionsArray[i].remotepersonname);
+            myscreen2video.srcObject = peerConnectionsArray[i].remoteStreamObj;
+            myscreen2video.muted = true;
+            myscreen2video.play();
+          } catch (err) {
+            console.log(err);
+          }
+      
+        }    
     }
     if (type === "removefromcalltopersonnames") {
       let calltopersonnamesU = [];
@@ -734,7 +756,7 @@ function App() {
         }
       }
      
-      await hideui({});
+     // await hideui({});
       await showui({ calltopersonnames: calltopersonnamesU });
     }
     
