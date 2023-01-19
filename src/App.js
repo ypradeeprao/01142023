@@ -416,8 +416,10 @@ let resetPeerConnections = async (methodprops) => {
   }
 };
 
-let closecall = async (remotepersonname) => {
- 
+let closecall = async (methodprops) => {
+  consolelog("closecall",methodprops);
+  
+  let {remotepersonname} = methodprops;
   if (peerConnectionsArray && peerConnectionsArray.length > 0) {
     for (let i =0;i<peerConnectionsArray.length;i++) {
     if(peerConnectionsArray[i].remotepersonname == remotepersonname && peerConnectionsArray[i].pc){
@@ -428,7 +430,8 @@ let closecall = async (remotepersonname) => {
 };
 
 let makecall = async (methodprops) => {
-  consolelog(methodprops);
+  consolelog("makecall",methodprops);
+  
   let {remotepersonname} = methodprops;
   let newpeerconnectionobj = {
     localmeetingname: localmeetingname,
@@ -831,7 +834,7 @@ function App() {
           </button>
           <button
             id="create-offer"
-            onClick={() => closecall({ type: "createAnswer" })}
+            onClick={() => closecall({ remotepersonname:remotepersonname  })}
           >
             closecall
           </button>
