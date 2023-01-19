@@ -62,13 +62,13 @@ socket.onmessage = function (event) {
       datafromserver.type === "createofferresult" &&
       datafromserver.data.createofferresult
     ) {
-      createAnswerHandler(personname,datafromserver.data.createofferresult);
+      createAnswerHandler({remotepersonname : personname,createofferresult:datafromserver.data.createofferresult});
     }
     if (datafromserver 
       && datafromserver.type === "createanswerresult"
       && datafromserver.data.createanswerresult
       ) {
-      addAnswerHandler(personname,datafromserver.data.createanswerresult);
+      addAnswerHandler({remotepersonname:personname,createanswerresult:datafromserver.data.createanswerresult});
     }
   
   }
@@ -427,7 +427,9 @@ let closecall = async (remotepersonname) => {
   } 
 };
 
-let makecall = async (remotepersonname) => {
+let makecall = async (methodprops) => {
+  consolelog(methodprops);
+  let {remotepersonname} = methodprops;
   let newpeerconnectionobj = {
     localmeetingname: localmeetingname,
     localpersonname: localpersonname,
@@ -440,12 +442,14 @@ let makecall = async (remotepersonname) => {
     peerConnectionsArray = [];
     peerConnectionsArray.push(newpeerconnectionobj);
   }
-  await createOfferHandler(remotepersonname);
+  await createOfferHandler({remotepersonname:remotepersonname});
 };
 
 
 
-let createOfferHandler = async (remotepersonname) => {
+let createOfferHandler = async (methodprops) => {
+  consolelog("createOfferHandler",methodprops);
+  let {remotepersonname} = methodprops;
   consolelog("peerConnectionsArray", peerConnectionsArray);
  
     for (let i =0;i<peerConnectionsArray.length;i++) {
@@ -530,7 +534,9 @@ let createOfferHandler = async (remotepersonname) => {
   }, 3000);
 };
 
-let createAnswerHandler = async (remotepersonname, createofferresult) => {
+let createAnswerHandler = async (methodprops) => {
+  consolelog("createAnswerHandler",methodprops);
+  let {remotepersonname,createofferresult} = methodprops;
   let offer3 = {};
  
   if (createofferresult) {
@@ -637,8 +643,9 @@ for (let i =0;i<peerConnectionsArray.length;i++) {
   }, 3000);
 };
 
-let addAnswerHandler = async (remotepersonname, createanswerresult) => {
-  console.log("Add answer triggerd");
+let addAnswerHandler = async (methodprops) => {
+  consolelog("addAnswerHandler",methodprops);
+  let {remotepersonname,createanswerresult} = methodprops;
   let answer3 = {};
 
   if (createanswerresult) {
