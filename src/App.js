@@ -23,7 +23,7 @@ let peerConnectionsObj = {};
 
 let socketsend = function (str) {
   consolelog("socketsend", str);
-  str.data.remotepersonname = sessionStorage.getItem("localremotepersonname");
+ 
   socket.send(JSON.stringify(str));
 };
 
@@ -62,13 +62,13 @@ socket.onmessage = function (event) {
       datafromserver.type === "createofferresult" &&
       datafromserver.data.createofferresult
     ) {
-      createAnswerHandler(datafromserver.data.createofferresult);
+      createAnswerHandler(personname,datafromserver.data.createofferresult);
     }
     if (datafromserver 
       && datafromserver.type === "createanswerresult"
       && datafromserver.data.createanswerresult
       ) {
-      addAnswerHandler(datafromserver.data.createanswerresult);
+      addAnswerHandler(personname,datafromserver.data.createanswerresult);
     }
   
   }
@@ -416,35 +416,37 @@ let resetPeerConnections = async (methodprops) => {
   }
 };
 
-let makecall = async () => {
+let makecall = async (remotepersonname) => {
   let newpeerconnectionobj = {
     localmeetingname: localmeetingname,
     localpersonname: localpersonname,
+    remotepersonname:remotepersonname
   };
      
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
-    peerConnectionsObj[sessionStorage.getItem("localremotepersonname")] = newpeerconnectionobj;
+    peerConnectionsObj[remotepersonname] = newpeerconnectionobj;
   } else {
     peerConnectionsObj = {};
-    peerConnectionsObj[sessionStorage.getItem("localremotepersonname")] = newpeerconnectionobj;
+    peerConnectionsObj[remotepersonname] = newpeerconnectionobj;
   }
-  await createOfferHandler();
+  await createOfferHandler(remotepersonname);
 };
 
-let closecall = async () => {
+let closecall = async (remotepersonname) => {
  
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
     for (let i in peerConnectionsObj) {
-    if(i == sessionStorage.getItem("localremotepersonname") && peerConnectionsObj[i].pc){
+    if(i == remotepersonname && peerConnectionsObj[i].pc){
       await peerConnectionsObj[i].pc.close();
     }
     }
   } 
 };
 
-let createOfferHandler = async () => {
+let createOfferHandler = async (remotepersonname) => {
   consolelog("peerConnectionsObj", peerConnectionsObj);
   for (let i in peerConnectionsObj) {
+    if(i == remotepersonname){
     let pc = new RTCPeerConnection(servers);
     let localStreamObj;
     let remoteStreamObj;
@@ -464,7 +466,7 @@ let createOfferHandler = async () => {
       myscreenvideo.muted = true;
       myscreenvideo.play();
 
-      let myscreen2video = document.getElementById("remotescreenvideo"+sessionStorage.getItem("localremotepersonname"));
+      let myscreen2video = document.getElementById("remotescreenvideo"+remotepersonname);
       myscreen2video.srcObject = remoteStreamObj;
       myscreen2video.muted = true;
       myscreen2video.play();
@@ -482,10 +484,12 @@ let createOfferHandler = async () => {
       });
     };
   }
+  }
 
   consolelog("peerConnectionsObj", peerConnectionsObj);
 
   for (let i in peerConnectionsObj) {
+    if(i == remotepersonname){
     let pcobj = peerConnectionsObj[i];
 
     peerConnectionsObj[i].pc.onicecandidate = async (event) => {
@@ -496,7 +500,7 @@ let createOfferHandler = async () => {
        
 
         sessionStorage.setItem(
-          "createofferresult",
+          "createofferresult"+remotepersonname,
           JSON.stringify(peerConnectionsObj[i].pc.localDescription)
         );
       }
@@ -506,6 +510,7 @@ let createOfferHandler = async () => {
     consolelog("pcobj", peerConnectionsObj[i]);
     await peerConnectionsObj[i].pc.setLocalDescription(offer3);
   }
+}
 
   setTimeout(() => {
     socketsend({
@@ -513,15 +518,16 @@ let createOfferHandler = async () => {
       data: {
         meetingname: localmeetingname,
         personname: localpersonname,
+        remotepersonname:remotepersonname,
         createofferresult: JSON.parse(
-          sessionStorage.getItem("createofferresult")
+          sessionStorage.getItem("createofferresult"+remotepersonname)
         ),
       },
     });
   }, 3000);
 };
 
-let createAnswerHandler = async (createofferresult) => {
+let createAnswerHandler = async (remotepersonname, createofferresult) => {
   let offer3 = {};
  
   if (createofferresult) {
@@ -533,13 +539,14 @@ let createAnswerHandler = async (createofferresult) => {
     localpersonname: localpersonname,
   };
   if (peerConnectionsObj && Object.keys(peerConnectionsObj).length > 0) {
-    peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
+    peerConnectionsObj[remotepersonname] = newpeerconnectionobj;
   } else {
     peerConnectionsObj = {};
-    peerConnectionsObj["remotepersonname"] = newpeerconnectionobj;
+    peerConnectionsObj[remotepersonname] = newpeerconnectionobj;
   }
 
   for (let i in peerConnectionsObj) {
+    if(i == remotepersonname){
     let pc = new RTCPeerConnection(servers);
     let localStreamObj;
     let remoteStreamObj;
@@ -563,7 +570,7 @@ let createAnswerHandler = async (createofferresult) => {
     }
 
     try {
-      let myscreen2video = document.getElementById("remotescreenvideo"+sessionStorage.getItem("localremotepersonname"));
+      let myscreen2video = document.getElementById("remotescreenvideo"+remotepersonname);
       myscreen2video.srcObject = remoteStreamObj;
       myscreen2video.muted = true;
       myscreen2video.play();
@@ -581,15 +588,18 @@ let createAnswerHandler = async (createofferresult) => {
       });
     };
   }
+}
+
 
   for (let i in peerConnectionsObj) {
+    if(i == remotepersonname){
     peerConnectionsObj[i].pc.onicecandidate = async (event) => {
       //Event that fires off when a new answer ICE candidate is created
       if (event.candidate) {
         console.log("Adding answer candidate...:", event.candidate);
         
         sessionStorage.setItem(
-          "createanswerresult",
+          "createanswerresult"+remotepersonname,
           JSON.stringify(peerConnectionsObj[i].pc.localDescription)
         );
       }
@@ -604,6 +614,7 @@ let createAnswerHandler = async (createofferresult) => {
       console.log(err);
     }
   }
+  }
 
   setTimeout(() => {
     socketsend({
@@ -611,15 +622,16 @@ let createAnswerHandler = async (createofferresult) => {
       data: {
         meetingname: localmeetingname,
         personname: localpersonname,
+        remotepersonname:remotepersonname,
         createanswerresult: JSON.parse(
-          sessionStorage.getItem("createanswerresult")
+          sessionStorage.getItem("createanswerresult"+remotepersonname)
         ),
       },
     });
   }, 3000);
 };
 
-let addAnswerHandler = async (createanswerresult) => {
+let addAnswerHandler = async (remotepersonname, createanswerresult) => {
   console.log("Add answer triggerd");
   let answer3 = {};
 
@@ -629,6 +641,7 @@ let addAnswerHandler = async (createanswerresult) => {
 
   console.log("answer:", answer3);
   for (let i in peerConnectionsObj) {
+    if(i == remotepersonname){
     // (!peerConnectionsObj[i].pc.currentRemoteDescription){
     setTimeout(() => {
       try {
@@ -638,7 +651,7 @@ let addAnswerHandler = async (createanswerresult) => {
       }
     }, 1000);
 
-    
+  } 
   }
 };
 
@@ -681,26 +694,27 @@ function App() {
     }
     if (type === "remotepersonname") {
       // await showui({ "personname": value });
-      sessionStorage.setItem("localremotepersonname", value);
+    
+      await showui({ remotepersonname: value });
     }
     
   };
 
   let handleClick = async (methodprops) => {
     let { type } = methodprops;
-  let {calltopersonnames} = compstate;
+  let {calltopersonnames, remotepersonname} = compstate;
     consolelog("handleClick", methodprops);
    
     
     if (type === "addtocalltopersonnames") {
-      calltopersonnames.push(sessionStorage.getItem("localremotepersonname"));
+      calltopersonnames.push(remotepersonname);
       await hideui({});
       await showui({ calltopersonnames: calltopersonnames });
     }
     if (type === "removefromcalltopersonnames") {
       let calltopersonnamesU = [];
       for(let i=0; i<calltopersonnames.length; i++){
-        if(calltopersonnames[i] != sessionStorage.getItem("localremotepersonname")){
+        if(calltopersonnames[i] != remotepersonname){
           calltopersonnamesU.push(calltopersonnames[i]);
         }
       }
@@ -737,7 +751,7 @@ function App() {
     }
   };
 
-  let {calltopersonnames} = compstate;
+  let {calltopersonnames, remotepersonname} = compstate;
   let calltopersonnamesHtml = [];
   for(let i=0; i<calltopersonnames.length; i++){
     let videoid = "remotescreenvideo"+calltopersonnames[i];
@@ -798,7 +812,7 @@ function App() {
           </p>
           <button
             id="create-offer"
-            onClick={() => makecall({ type: "createAnswer" })}
+            onClick={() => makecall({ type: "createAnswer", remotepersonname:remotepersonname })}
           >
             Create Offer
           </button>
